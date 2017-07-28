@@ -70,12 +70,8 @@
       if(ierr /= 0)write(*,*)"allocation error: wallDistance" 
 
 
-  allocate(lig(nx),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: lig" 
   allocate(li(nx),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: li"
-  allocate(lkg(nz),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: lkg"
   allocate(lk(nz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: lk"
 
@@ -270,31 +266,31 @@
   allocate(ht(nxyza),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ht" 
 
-!     Nusselt number
+! Nusselt number
   if (lcal(ien)) then
-  allocate(bnusmeanw(ny),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnusmeanw"
-  allocate(bnusmeane(ny),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnusmeane"
-  allocate(bnusmeanb(ny),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnusmeanb"
-  allocate(bnusmeant(ny),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnusmeant"
+  ! allocate(bnusmeanw(ny),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnusmeanw"
+  ! allocate(bnusmeane(ny),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnusmeane"
+  ! allocate(bnusmeanb(ny),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnusmeanb"
+  ! allocate(bnusmeant(ny),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnusmeant"
 
-  allocate(bnuslocalw(nyz),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnuslocalw"
-  allocate(bnuslocale(nyz),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnuslocale"
+  ! allocate(bnuslocalw(nyz),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnuslocalw"
+  ! allocate(bnuslocale(nyz),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnuslocale"
 
-  allocate(bnuslocalb(nxy),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnuslocalb"
-  allocate(bnuslocalt(nxy),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnuslocalt"
+  ! allocate(bnuslocalb(nxy),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnuslocalb"
+  ! allocate(bnuslocalt(nxy),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnuslocalt"
 
-  allocate(bnuselt1(ny*nz),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnuselt1"
-  allocate(bnuselt2(ny*nz),stat=ierr) 
-      if(ierr /= 0)write(*,*)"allocation error: bnuselt2"
+  ! allocate(bnuselt1(ny*nz),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnuselt1"
+  ! allocate(bnuselt2(ny*nz),stat=ierr) 
+  !     if(ierr /= 0)write(*,*)"allocation error: bnuselt2"
   endif
 
 
@@ -576,9 +572,7 @@
       if (allocated(AR3Y)) deallocate(AR3Z)
       if (allocated(wallDistance)) deallocate(wallDistance)
 
-      if (allocated(LIG)) deallocate(LIG) 
       if (allocated(LI)) deallocate(LI) 
-      if (allocated(LKG)) deallocate(LKG) 
       if (allocated(LK)) deallocate(LK) 
 
 !     COEFFICIENT ARRAYS

@@ -1,89 +1,89 @@
 !***********************************************************************
 !
-      subroutine calcuvw
+subroutine calcuvw
 !
 !***********************************************************************
 !
-      use types
-      use parameters
-      use indexes
-      use geometry
-      use coef
-      use coefb
-      use variables
-      use buoy
-      use time_mod
-      use gradients
+  use types
+  use parameters
+  use indexes
+  use geometry
+  use coef
+  use coefb
+  use variables
+  use buoy
+  use time_mod
+  use gradients
 
-      implicit none
+  implicit none
 !
 !***********************************************************************
 
 !
-!     local variables
+! Local variables
 !
-      integer, parameter :: isol=1
-      integer :: i, j, k, inp
-      real(prec) :: urfrs, urfms, apotime, heat
-      real(prec) :: sut, svt, swt
+  integer, parameter :: isol=1
+  integer :: i, j, k, inp
+  real(prec) :: urfrs, urfms, apotime, heat
+  real(prec) :: sut, svt, swt
 
-      logical :: ScndOrderWallBC_Model = .false.
-      integer :: ijp, inbc, ingc, iface
-      real(dp) :: fxp,fxe,ground_zero_x,ground_zero_y,ground_zero_z,dnw,dpb,are,nxf,nyf,nzf
-      real(prec) :: utp,vtp,wtp,upb,vpb,wpb,vnp,viss,cf,vsol,fdui,fdvi,fdwi,fdne
+  logical :: ScndOrderWallBC_Model = .false.
+  integer :: ijp, inbc, ingc, iface
+  real(dp) :: fxp,fxe,ground_zero_x,ground_zero_y,ground_zero_z,dnw,dpb,are,nxf,nyf,nzf
+  real(prec) :: utp,vtp,wtp,upb,vpb,wpb,vnp,viss,cf,vsol,fdui,fdvi,fdwi,fdne
 
 
 
-!.....velocity gradients: 
-      if (lstsq) then 
-        call grad_lsq_qr(u,gradu,2)
-        call grad_lsq_qr(v,gradv,2)
-        call grad_lsq_qr(w,gradw,2)
-      elseif (gauss) then
-        call grad_gauss(u,gradu(1,:),gradu(2,:),gradu(3,:))
-        call grad_gauss(v,gradv(1,:),gradv(2,:),gradv(3,:))
-        call grad_gauss(w,gradw(1,:),gradw(2,:),gradw(3,:))
-      endif
+! Velocity gradients: 
+  if (lstsq) then 
+    call grad_lsq_qr(u,gradu,2)
+    call grad_lsq_qr(v,gradv,2)
+    call grad_lsq_qr(w,gradw,2)
+  elseif (gauss) then
+    call grad_gauss(u,gradu(1,:),gradu(2,:),gradu(3,:))
+    call grad_gauss(v,gradv(1,:),gradv(2,:),gradv(3,:))
+    call grad_gauss(w,gradw(1,:),gradw(2,:),gradw(3,:))
+  endif
 
-!.....calculate pressure gradients
-      if (lstsq) then   
-        call grad_lsq_qr(pp,gradp,2)
-      elseif (gauss) then
-        call grad_gauss(pp,gradp(1,:),gradp(2,:),gradp(3,:))
-      endif
+! Pressure gradients
+  if (lstsq) then   
+    call grad_lsq_qr(pp,gradp,2)
+  elseif (gauss) then
+    call grad_gauss(pp,gradp(1,:),gradp(2,:),gradp(3,:))
+  endif
 
-!.....calculate source terms integrated over volume
-      do k=3,nkmm
-      do i=3,nimm
-      do j=3,njmm
+! calculate source terms integrated over volume
+  do k=3,nkmm
+  do i=3,nimm
+  do j=3,njmm
 
-      inp=lk(k)+li(i)+j
+    inp=lk(k)+li(i)+j
 !
-!.....for u  sp => ap; for v  sp => spv; for w  sp => sp
-!.....sum source terms
-      ap(inp) = 0.0d0
-      spv(inp) = 0.0d0
-      sp(inp) = 0.0d0
+! for u  sp => ap; for v  sp => spv; for w  sp => sp
+! sum source terms that will go on matrix diagonal
+    ap(inp) = 0.0d0
+    spv(inp) = 0.0d0
+    sp(inp) = 0.0d0
 
 !=======================================================================
-!.....pressure source terms
+! Pressure source terms
 !=======================================================================
-!.....treating it as a volume source
-      su(inp) = -gradp(1,inp)*vol(inp)
-      sv(inp) = -gradp(2,inp)*vol(inp)
-      sw(inp) = -gradp(3,inp)*vol(inp)
+! Treating it as a volume source
+    su(inp) = -gradp(1,inp)*vol(inp)
+    sv(inp) = -gradp(2,inp)*vol(inp)
+    sw(inp) = -gradp(3,inp)*vol(inp)
 
-!.....constant mass flow forcing - used only on u velocity component
+! constant mass flow forcing - used only on u velocity component
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      if(const_mflux) su(inp) = su(inp) + gradpcmf*vol(inp)
+    if(const_mflux) su(inp) = su(inp) + gradpcmf*vol(inp)
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 !=======================================================================
-!.....buoyancy source terms
+! Buoyancy source terms
 !=======================================================================
-      if(lcal(ien).and.lbuoy) then
+    if(lcal(ien).and.lbuoy) then
 !-----------------------------------------------------------------------
-!........[boussinesq-ova aproximacija: ]
+! ...[Boussinesq-ova aproximacija: ]
 !-----------------------------------------------------------------------
       heat=0.0d0
       if(boussinesq) then
@@ -95,12 +95,12 @@
       su(inp)=su(inp)-gravx*heat
       sv(inp)=sv(inp)-gravy*heat
       sw(inp)=sw(inp)-gravz*heat
-      endif
+    endif
 
 !=======================================================================
-!.....unsteady term
+! unsteady term
 !=======================================================================
-      if(bdf) then
+    if(bdf) then
 !-----------------------------------------------------------------------
 !    three level implicit time integration method:
 !    in case that btime=0. --> implicit euler
@@ -118,43 +118,36 @@
       spv(inp)=spv(inp)+apotime*(1+0.5*btime)
       sp(inp)=sp(inp)+apotime*(1+0.5*btime)
 !-----------------------------------------------------------------------
-      endif
+    endif
 
-      end do
-      end do
-      end do
+  end do
+  end do
+  end do
 
 !
-!.....calc reynols stresses explicitly
-      call calcstress
-!
-!=======================================================================
-!.....[additional terms: ]
-!=======================================================================
-      if(lturb.and.lasm) then
+! calc Reynols Stresses explicitly
+  call calcstress
+
 !-----the additional algebraic stress source terms ---------------------
+  if(lturb.and.lasm) then
+
       call additional_algebraic_stress_terms
+
+  end if
 !-----------------------------------------------------------------------
-      end if  ![asm approach]
 
 
-!.....fluxes
+! Fluxes - terms integrated over cell faces
 
-!.....east cell - face
-      call fluxuvw(nj,1,nij, &
-                   ar1x,ar1y,ar1z, &
-                   fx,ae,aw,f1)
-
-!.....north cell - face
-      call fluxuvw(1,nij,nj, &
-                   ar2x,ar2y,ar2z, &
-                   fy,an,as,f2)
-
-!.....top   cell - face
-      call fluxuvw(nij,nj,1, &
-                   ar3x,ar3y,ar3z, &
-                   fz,at,ab,f3)  
-
+! east cell - face
+  call fluxuvw(nj,1,nij, ar1x,ar1y,ar1z, fx,ae,aw,f1)
+!             {        } {             } {          }
+! north cell - face
+  call fluxuvw(1,nij,nj, ar2x,ar2y,ar2z, fy,an,as,f2)
+!             {        } {             } {          }
+! top   cell - face
+  call fluxuvw(nij,nj,1, ar3x,ar3y,ar3z, fz,at,ab,f3)  
+!             {        } {             } {          }
 
   !----------------------------------------------------------------------------
   ! Wall boundaries
@@ -346,30 +339,30 @@
 
 
 !
-!.....Assemble and solve system
+! Assemble and solve system
 !
 
-      if(cn) then
-!.....crank-nicolson stuff - only once:
-      ae = 0.5d0*ae
-      an = 0.5d0*an
-      at = 0.5d0*at
-      aw = 0.5d0*aw
-      as = 0.5d0*as
-      ab = 0.5d0*ab
-      endif
+  if(cn) then
+! crank-nicolson stuff - only once:
+  ae = 0.5d0*ae
+  an = 0.5d0*an
+  at = 0.5d0*at
+  aw = 0.5d0*aw
+  as = 0.5d0*as
+  ab = 0.5d0*ab
+  endif
 
-      urfrs=urfr(iu)
-      urfms=urfm(iu)
+  urfrs=urfr(iu)
+  urfms=urfm(iu)
 
-      do k=3,nkmm
-      do i=3,nimm
-      do j=3,njmm
+  do k=3,nkmm
+  do i=3,nimm
+  do j=3,njmm
 
-      inp=lk(k)+li(i)+j
+    inp=lk(k)+li(i)+j
 
-      if(cn) then
-!.....crank-nicolson time stepping source terms
+    if(cn) then
+! crank-nicolson time stepping source terms
       apotime=den(inp)*vol(inp)/timestep
       su(inp)=su(inp)+(ae(inp)*uo(inp+nj)  + aw(inp)*uo(inp-nj)+    &
                        an(inp)*uo(inp+1)   + as(inp)*uo(inp-1)+     &
@@ -378,34 +371,34 @@
                       -an(inp)-as(inp)                              &
                       -at(inp)-ab(inp))*uo(inp)               
       ap(inp)=ap(inp)+apotime
-!.....end of crank-nicolson time stepping source terms
-!.....end of crank-nicolson stuff
-      endif
+! end of crank-nicolson time stepping source terms
+! end of crank-nicolson stuff
+    endif
 
-      ap(inp)=ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp)+ap(inp)
-      ap(inp)=ap(inp)*urfrs
-      su(inp)=su(inp)+urfms*ap(inp)*u(inp)
-      apu(inp)=1./(ap(inp)+small) ! simple,piso
-      !apu(inp)=1./(ap(inp)-(ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp))+small) ! simplec
-      enddo
-      enddo
-      enddo
+    ap(inp)=ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp)+ap(inp)
+    ap(inp)=ap(inp)*urfrs
+    su(inp)=su(inp)+urfms*ap(inp)*u(inp)
+    apu(inp)=1./(ap(inp)+small) ! simple,piso
+    !apu(inp)=1./(ap(inp)-(ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp))+small) ! simplec
+  enddo
+  enddo
+  enddo
 !
-!.....solving f.d. equations
-      if(isol.eq.1) call sipsol(u,iu)
-      if(isol.eq.2) call cgstab_sip(u,iu) 
+! solving f.d. equations
+  if(isol.eq.1) call sipsol(u,iu)
+  if(isol.eq.2) call cgstab_sip(u,iu) 
 !
-      urfrs=urfr(iv)
-      urfms=urfm(iv)
+  urfrs=urfr(iv)
+  urfms=urfm(iv)
 
-      do k=3,nkmm
-      do i=3,nimm
-      do j=3,njmm
+  do k=3,nkmm
+  do i=3,nimm
+  do j=3,njmm
 
-      inp=lk(k)+li(i)+j
+    inp=lk(k)+li(i)+j
 
-      if(cn) then
-!.....crank-nicolson time stepping source terms
+    if(cn) then
+! crank-nicolson time stepping source terms
       apotime=den(inp)*vol(inp)/timestep
       sv(inp)=sv(inp)+(ae(inp)*vo(inp+nj)  + aw(inp)*vo(inp-nj)+    &
                        an(inp)*vo(inp+1)   + as(inp)*vo(inp-1)+     &
@@ -414,35 +407,35 @@
                       -an(inp)-as(inp)                              &
                       -at(inp)-ab(inp))*vo(inp)
       spv(inp)=spv(inp)+apotime
-!.....end of crank-nicolson time stepping source terms
-      endif
+! end of crank-nicolson time stepping source terms
+    endif
 
-      ap(inp)=ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp)+spv(inp)
-      ap(inp)=ap(inp)*urfrs
-      su(inp)=sv(inp)+urfms*ap(inp)*v(inp)
-      apv(inp)=1./(ap(inp)+small) ! simple,piso
-      !apv(inp)=1./(ap(inp)-(ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp))+small) ! simplec
-      enddo
-      enddo
-      enddo
+    ap(inp)=ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp)+spv(inp)
+    ap(inp)=ap(inp)*urfrs
+    su(inp)=sv(inp)+urfms*ap(inp)*v(inp)
+    apv(inp)=1./(ap(inp)+small) ! simple,piso
+    !apv(inp)=1./(ap(inp)-(ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp))+small) ! simplec
+  enddo
+  enddo
+  enddo
 !
-!.....solving f.d. equations
+! solving f.d. equations
 !
-      if(isol.eq.1) call sipsol(v,iv)
-      if(isol.eq.2) call cgstab_sip(v,iv)
+  if(isol.eq.1) call sipsol(v,iv)
+  if(isol.eq.2) call cgstab_sip(v,iv)
 !
-!.....problem modifications - boundary conditions for  w - comp.
-      urfrs=urfr(iw)
-      urfms=urfm(iw)
+! problem modifications - boundary conditions for  w - comp.
+  urfrs=urfr(iw)
+  urfms=urfm(iw)
 
-      do k=3,nkmm
-      do i=3,nimm
-      do j=3,njmm
+  do k=3,nkmm
+  do i=3,nimm
+  do j=3,njmm
 
-      inp=lk(k)+li(i)+j
+    inp=lk(k)+li(i)+j
 
-      if(cn) then
-!.....crank-nicolson time stepping source terms
+    if(cn) then
+! crank-nicolson time stepping source terms
       apotime=den(inp)*vol(inp)/timestep
       sw(inp)=sw(inp)+(ae(inp)*wo(inp+nj)  + aw(inp)*wo(inp-nj)+    &
                        an(inp)*wo(inp+1)   + as(inp)*wo(inp-1)+     &
@@ -451,21 +444,21 @@
                       -an(inp)-as(inp)                              &
                       -at(inp)-ab(inp))*wo(inp)
       sp(inp)=sp(inp)+apotime
-!.....end of crank-nicolson time stepping source terms
-      endif
+! end of crank-nicolson time stepping source terms
+    endif
 
-      ap(inp)=ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp)+sp(inp)
-      ap(inp)=ap(inp)*urfrs
-      su(inp)=sw(inp)+urfms*ap(inp)*w(inp)
-      apw(inp)=1./(ap(inp)+small) ! simple,piso
-      !apw(inp)=1./(ap(inp)-(ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp))+small) ! simplec
-      enddo
-      enddo
-      enddo
+    ap(inp)=ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp)+sp(inp)
+    ap(inp)=ap(inp)*urfrs
+    su(inp)=sw(inp)+urfms*ap(inp)*w(inp)
+    apw(inp)=1./(ap(inp)+small) ! simple,piso
+    !apw(inp)=1./(ap(inp)-(ae(inp)+aw(inp)+an(inp)+as(inp)+at(inp)+ab(inp))+small) ! simplec
+  enddo
+  enddo
+  enddo
 !
-!.....solving f.d. equations
-      if(isol.eq.1) call sipsol(w,iw)
-      if(isol.eq.2) call cgstab_sip(w,iw)
+! solving f.d. equations
+  if(isol.eq.1) call sipsol(w,iw)
+  if(isol.eq.2) call cgstab_sip(w,iw)
 
-      return
-      end
+return
+end subroutine

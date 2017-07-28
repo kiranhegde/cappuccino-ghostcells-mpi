@@ -45,38 +45,6 @@ module parameters
   integer :: ierr
   integer :: this
 
-end module parameters
-
-module indexes
-  !
-  ! determine location on our structural grid
-  !
-  use types
-  use parameters
-   
-
-    integer :: ni,nj,nk,nim,njm,nkm,nij,nik,njk,nijk, &
-               ijs,iks,jks,ijks,icst,icen,&
-               kgrid,iter,iterf,&
-               imon,jmon,kmon,mpoints, &
-               ijkmon,ipr,jpr,kpr,ijkpr,idir
-    integer :: nimm,njmm,nkmm
-
-   integer, dimension(:), allocatable :: lig, li
-   integer, dimension(:), allocatable :: lkg, lk
-
-   ! ! parameters related to multigrid procedure:
-   ! integer, dimension(ngit) :: nigit,njgit,nkgit,&
-   !                             ijkgit,&
-   !                             isbij,isbik,isbjk,&
-   !                             lsg,lsr,lsi,mit
-
-   ! those with nphi are related to each field that we calculate u,v,w,p,t,kin,dis...:
-   integer, dimension(nphi) :: nsw
-   logical, dimension(nphi) :: lcal
-   real(prec), dimension(nphi) ::  sor,resor,snorin,prtinv,urf,urfr,urfm,gds
-
- 
    !  stuff read from the input file
    real(prec) :: flowin,xmonin,c1,c2,c3,prm1,prt1,cmu,&
                  phit,sksi,eta,rcost,zero,dis,&
@@ -84,7 +52,6 @@ module indexes
                  bns1,bns2,&
                  c1asm,c2asm,c3asm,facnap,facflx
 
-   real(prec), dimension(:), allocatable ::  bnuselt1,bnuselt2 ! dimension(nx*ny)
 
    integer :: iconvective_scheme
 
@@ -122,7 +89,60 @@ module indexes
    logical :: roughWall
    logical :: flux_limiter 
 
+  ! friction velocity
+  real(prec) :: utau 
+  ! Magnitude of the bulk velocity,and pressure grad that will drive the constant mass-flux flow (cmf)
+  real(prec) :: magUbar, gradPcmf
+  ! Continuity errrs
+  real(prec) :: LocalContErr,sumLocalContErr, globalContErr, cumulativeContErr
+  ! Fixed value for Courant number - set in modinp for now - may be read in input
+  real(prec) :: CoNumFixValue
+
+   ! those with nphi are related to each field that we calculate u,v,w,p,t,kin,dis...:
+   integer, dimension(nphi) :: nsw ! No. of linear solver iterations
+   logical, dimension(nphi) :: lcal ! Logical do we calculate this field
+   real(prec), dimension(nphi) :: sor,resor,snorin
+   real(prec), dimension(nphi) :: prtinv ! Inverse (1/x) Prandtl-Schmid numbers for diffussion
+   real(dp), dimension(nphi) :: urf,urfr,urfm ! Unded-relaxation parameteres
+   real(dp), dimension(nphi) :: gds ! Defferred correction blending parameter
+
+end module parameters
+
+module indexes
+  !
+  ! determine location on our structural grid
+  !
+  use types
+  use parameters
+   
+
+    integer :: ni,nj,nk
+    integer :: nim,njm,nkm
+    integer :: nimm,njmm,nkmm
+    integer :: nij,nik,njk,nijk
+    integer :: ijs,iks,jks,ijks
+    integer :: icst,icen
+    integer :: iter
+    integer :: imon,jmon,kmon,ijkmon,mpoints
+    integer :: ipr,jpr,kpr,ijkpr
+    integer :: idir
+
+    integer, dimension(:), allocatable :: li,lk
+
 end module indexes
+
+module mpi_exchange
+  use types
+
+    ! MPI related 
+    integer :: lenbuf ! Buffer size, total no of faces that divide this and other domains
+    integer :: num_connections ! broj konektovanih domena na ovaj trenutni
+    integer, dimension(:), allocatable :: neighbour   ! [1,num_connections]
+    integer, dimension(:), allocatable :: ioffset_buf ! [1,num_connections+1]
+    integer, dimension(:), allocatable :: bufind      ! [1,len_buffer] indeksi granicnih celija
+    real(prec), dimension(:), allocatable :: buffer   ! [1,len_buffer]
+
+end module
 
 module geometry
 !%%%%%%%%%%%%%%
@@ -227,13 +247,11 @@ module boundc
 !%%%%%%%%%%
    use types
   !
-  ! coefficient needed near the boundary 
+  ! Coefficients needed near the boundary 
   !
-
-  integer ::      lw,lww
   real(prec) ::   suu,svu,swu,sup,svp,swp,cmu25,cmu75, &
                   cappa,elog,erough,zzero,ypl,tau,gent,sued,pranl,prant, &
-                  pfun,hcoef,dx1,dx2,dy1,dy2,dz1,dz2,deln, &
+                  pfun,hcoef,dz1,dz2,deln, &
                   t_hflx,psi,cu
 end module boundc
 
@@ -257,32 +275,23 @@ module variables
 !%%%%%%%%%%%%%%
    use types
     
-   ! these are cellwise defined variables, that is - the fields
-   real(prec), dimension(:), allocatable :: u ,v ,w
-   real(prec), dimension(:), allocatable :: f1 ,f2 ,f3
-   real(prec), dimension(:), allocatable :: p ,pp ,te ,ed ,t
-   real(prec), dimension(:), allocatable :: vis ,den ,gen ,vart
-   real(prec), dimension(:), allocatable :: edd ,utt ,vtt ,wtt
-   real(prec), dimension(:), allocatable :: ret ,con
-   real(prec), dimension(:), allocatable :: yplus ,upl,kplus 
-   real(prec), dimension(:), allocatable :: uu ,uv ,uw, &
-                                                vv ,vw, &
-                                                    ww
+  ! these are cellwise defined variables, that is - the fields
+  real(prec), dimension(:), allocatable :: u ,v ,w
+  real(prec), dimension(:), allocatable :: f1 ,f2 ,f3
+  real(prec), dimension(:), allocatable :: p ,pp ,te ,ed ,t
+  real(prec), dimension(:), allocatable :: vis ,den ,gen ,vart
+  real(prec), dimension(:), allocatable :: edd ,utt ,vtt ,wtt
+  real(prec), dimension(:), allocatable :: ret ,con
+  real(prec), dimension(:), allocatable :: yplus ,upl,kplus 
+  real(prec), dimension(:), allocatable :: uu ,uv ,uw, &
+                                              vv ,vw, &
+                                                  ww
 
-   ! friction velocity
-   real(prec) :: utau 
-   ! Magnitude of the bulk velocity,and pressure grad that will drive the constant mass-flux flow (cmf)
-   real(prec) :: magUbar, gradPcmf
-   ! Continuity errrs
-   real(prec) :: LocalContErr,sumLocalContErr, globalContErr, cumulativeContErr
-   ! Fixed value for Courant number - set in modinp for now - may be read in input
-   real(prec) :: CoNumFixValue
-
-   !  Related to seamless-alpha turbulence model:
-   real(prec), dimension(:), allocatable :: alph, al_les, al_rans, diff          !  Related to seamless-alpha turbulence model
-   real(prec), dimension(:), allocatable :: timelimit                            ! Durbin Time-scale limiter
-   real(prec), dimension(:), allocatable :: strain                               ! Strain magnitude
-   real(prec), dimension(:), allocatable :: Vorticity                            ! Vorticity magnitude
+  !  Related to seamless-alpha turbulence model:
+  real(prec), dimension(:), allocatable :: alph, al_les, al_rans, diff  !  Related to seamless-alpha turbulence model
+  real(prec), dimension(:), allocatable :: timelimit                    ! Durbin Time-scale limiter
+  real(prec), dimension(:), allocatable :: strain                       ! Strain magnitude
+  real(prec), dimension(:), allocatable :: Vorticity                    ! Vorticity magnitude
 
 end module variables
 
@@ -290,7 +299,9 @@ module nusselt
 !%%%%%%%%%%%%
   use types
   use parameters
-   
+
+  real(prec), dimension(:), allocatable ::  bnuselt1,bnuselt2 ! dimension(nx*ny) 
+
   real(prec), dimension(:), allocatable :: bnusmeanw,bnusmeane, &
                                            bnusmeanb, bnusmeant
 

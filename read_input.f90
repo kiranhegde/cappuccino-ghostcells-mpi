@@ -5,7 +5,6 @@ subroutine read_input
   use types
   use parameters
   use indexes
-  use variables, only: conumfixvalue, gradPcmf
   use boundc
   use title_mod
   use buoy

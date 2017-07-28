@@ -38,6 +38,8 @@ F90FILES=\
       calc_statistics.f90 \
       calc_vis_les.f90 \
       correctBoundaryConditions.f90 \
+      exchange_mpi.f90\
+      global_sum_mpi.f90 \
       fluxmass2.f90 \
       fluxscm-overrelaxed-correction.f90 \
       fluxsct.f90 \
@@ -95,7 +97,7 @@ cappuccino_ghostcells_mpi: ${F90OBJS} ${LINEAR_SOLVERS}
 	${F90} ${F90OBJS} ${LINEAR_SOLVERS} ${LFLAGS} ${INCS} -o cappuccino_ghostcells_mpi 
 
 clean:
-	@rm  *.o *.mod
+	@rm  *.o *.mod cappuccino_ghostcells_mpi
 
 ##################################################################
 # Generic rules

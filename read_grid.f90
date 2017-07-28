@@ -6,6 +6,7 @@ subroutine read_grid
   use parameters
   use indexes
   use geometry
+  use mpi_exchange
   use bc
   use boundc
   use title_mod
@@ -143,6 +144,7 @@ call allocate_arrays
   read( grid_unit ) (z(ijk),ijk=1,nijk)
   read( grid_unit ) (xc(ijk),ijk=1,nijk)
   read( grid_unit ) (yc(ijk),ijk=1,nijk)
+  print*,this-1,xc(111:115)
   read( grid_unit ) (zc(ijk),ijk=1,nijk)
   read( grid_unit ) (vol(ijk),ijk=1,nijk)
   read( grid_unit ) (fx(ijk),ijk=1,nijk)
@@ -213,9 +215,33 @@ call allocate_arrays
 
   close ( grid_unit )
 
+
+
+
+
   ! Set grid loop parameters
   call setind
 
-print*,'Here',myid
+  ! Set parameters for MPI exchange and allocate arrays for exchange
+num_connections = 1
+lenbuf = 5
+allocate( neighbour( num_connections )) 
+allocate( ioffset_buf( num_connections+1 )) 
+allocate( bufind( lenbuf )) 
+allocate( buffer( lenbuf )) 
+neighbour(1) = nproc - this
+ioffset_buf(1) = 1
+ioffset_buf(2) = 6 
+bufind= reshape((/ 111, 112, 113, 114, 115 /), shape(bufind))
+
+print*,'THIS: ',this-1,lenbuf,num_connections,neighbour(1)
+
+Xc(111) = this*121+1
+call exchange(xc)
+
+print*,'ID: ',this-1,'Cell centers: ', xc(bufind(:))
+
+print*,'Here',this-1
+
 
 end subroutine read_grid
