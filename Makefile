@@ -21,10 +21,15 @@ LINEAR_SOLVER_FILES=\
 F90FILES=\
       modules_allocatable.f90 \
       utils.f90 \
+      global_max_mpi.f90 \
+      global_sum_mpi.f90 \
+      abort_mission_mpi.f90 \
+      synchronize_mpi.f90 \
+      exchange_mpi.f90 \
       fieldManipulation.f90 \
       set_parameters.f90 \
       allocate.f90 \
-      asm_terms.f90 \
+      asm_terms_new.f90 \
       bcin.f90 \
       bpres.f90 \
       calcheatflux.f90 \
@@ -38,14 +43,11 @@ F90FILES=\
       calc_statistics.f90 \
       calc_vis_les.f90 \
       correctBoundaryConditions.f90 \
-      exchange_mpi.f90\
-      global_sum_mpi.f90 \
       fluxmass2.f90 \
       fluxscm-overrelaxed-correction.f90 \
       fluxsct.f90 \
       fluxuvw-overrelaxed-correction.f90 \
       fvm_laplacian.f90 \
-      corvel.f90 \
       find_strain_rate.f90 \
       find_intersection_point.f90 \
       fluxmc.f90 \
@@ -58,7 +60,6 @@ F90FILES=\
       nusnumb.f90 \
       openfiles.f90 \
       outbc.f90 \
-      output.f90 \
       PISO_multiple_correction.f90 \
       PISO_assemble_pressure_eq.f90 \
       PISO_getHbyA.f90 \

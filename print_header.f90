@@ -19,10 +19,8 @@ subroutine print_header
   write(66,'(//,45x,a)') '######################################################################'
   write(66,'(45x,a70)')                             title
   write(66,'(45x,a)')    '######################################################################'
-  write(66,'(/,50x,a,1pe10.4)')   'flow inlet       : flow = ',flowin
-  write(66,'(50x,a,1pe10.4)')   'fluid density    :  den = ',densit
+  write(66,'(/,50x,a,1pe10.4)')   'fluid density    :  den = ',densit
   write(66,'(50x,a,1pe10.4)')   'dynamic viscosity:  vis = ',viscos
-  write(66,'(50x,a,0pf4.2)')    'alfa  parameter  : alfa = ',alfa
   write(66,'(50x,a,1pe10.4)')   'conv. criterion  :  sor = ',sormax
 
   if(lcal(iu))   write(66,'(/,50x,a,f5.2,a,f5.2,a,i3)') 'urf( u )=',urf(iu), '  gds( u )=',gds(iu), '  nsw=', nsw(iu)
@@ -33,27 +31,24 @@ subroutine print_header
   if(lcal(ied))  write(66,'(50x,a,f5.2,a,f5.2,a,i3)')   'urf( ed)=',urf(ied),'  gds( ed)=',gds(ied),'  nsw=', nsw(ied)
   if(lcal(ivis)) write(66,'(50x,a,f5.2)')               'urf(vis)=',urf(ivis)
   if(lcal(ien))  write(66,'(50x,a,f5.2,a,f5.2,a,i3)')   'urf( t )=',urf(ien),'  gds( t )=',gds(ien),'  nsw=',nsw(ien)
-  if(lcal(ivart)) then 
-    write(66,'(50x,a,f5.2,a,f5.2,a,i3)') 'urf(var)=',urf(ivart),'  gds(var)=',gds(ivart),'  nsw=',nsw(ivart)
-  end if
-  if(lcal(icon)) then 
-    write(66,'(50x,a,f5.2,a,f5.2,a,i3)') 'urf(con)=',urf(icon),'  gds(con)=',gds(icon),'  nsw=',nsw(icon)
-  end if
+  if(lcal(ivart)) write(66,'(50x,a,f5.2,a,f5.2,a,i3)') 'urf(var)=',urf(ivart),'  gds(var)=',gds(ivart),'  nsw=',nsw(ivart)
+  if(lcal(icon)) write(66,'(50x,a,f5.2,a,f5.2,a,i3)') 'urf(con)=',urf(icon),'  gds(con)=',gds(icon),'  nsw=',nsw(icon)
+
   write(66,*)
   write(66,'(45x,a)') '================================================================='
-  write(66,'(50x,a,e10.4)') 'time step= ',timestep
+  write(66,'(50x,a,e10.4)') 'Time step= ',timestep
   write(66,'(45x,a)') '-----------------------------------------------------------------'
-  if(.not.lbuoy) write(66,'(50x,a)') 'buoyancy activated:  - no -    '
-  if(lbuoy) write(66,'(50x,a)') 'buoyancy activated:  - yes-    '
+  if(.not.lbuoy) write(66,'(50x,a)') 'Buoyancy activated:  - no -    '
+  if(lbuoy) write(66,'(50x,a)') 'Buoyancy activated:  - yes-    '
   if(boussinesq) then
-    write(66,'(50x,a)') 'boussinesq aproximaton: - yes- '
-  else !if(boussinesq.eq.0) 
-    write(66,'(50x,a)') 'boussinesq aproximaton: - no - '
+    write(66,'(50x,a)') 'Boussinesq aproximaton: - yes- '
+  else 
+    write(66,'(50x,a)') 'Boussinesq aproximaton: - no - '
   endif
   write(66,'(45x,a)') '-----------------------------------------------------------------'
-  write(66,'(50x,a,e10.4,2x,e10.4,2x,e10.4)') 'gravity: (x-y-z): ',gravx,gravy,gravz 
+  write(66,'(50x,a,e10.4,2x,e10.4,2x,e10.4)') 'Gravity: (x-y-z): ',gravx,gravy,gravz 
   write(66,'(45x,a)') '-----------------------------------------------------------------'
-  write(66,'(50x,3(a,i3),a,i8)')'no. cells = ',ni-2,' x ',nj-2,' x ',nk-2,' = ',(ni-2)*(nj-2)*(nk-2)
+  write(66,'(50x,3(a,i3),a,i8)')'No. cells = ',ni-2,' x ',nj-2,' x ',nk-2,' = ',(ni-2)*(nj-2)*(nk-2)
   write(66,'(45x,a)') '================================================================='
   write(66,'(a3)') '   '
   write(66,'(a3)') '   '

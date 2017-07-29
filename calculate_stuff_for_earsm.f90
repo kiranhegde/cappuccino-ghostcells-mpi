@@ -23,7 +23,6 @@
       USE COEFB
       USE VARIABLES
       USE BOUNDC
-      USE OBSTACLE
       USE INLET
       USE GRADIENTS
       USE OMEGA_Turb_Models
@@ -396,16 +395,16 @@
 
 !=====FIND KSI==========================================================
 !      KSI=MIN(MAX(SQRT(TE(INP))/(0.09*WALL_DIST*ED(INP)),           &  !< SST radi uporedjivanja
-!                 (500.*VISOB(INP)/DEN(INP))/(WALL_DIST**2*ED(INP))),&  !
+!                 (500.*VISCOS/DEN(INP))/(WALL_DIST**2*ED(INP))),&  !
 !              4.*DEN(INP)*TE(INP)/(1.168*DOMEGAPL*WALL_DIST**2))       !
       IF (EARSM_WJ) THEN
       KSI=MIN(MAX(SQRT(TE(INP))/(0.09*WLDIST*ED(INP)),            &     !< EARSM 
-                 (500.*VISOB(INP)/DEN(INP))/(WLDIST**2*ED(INP))), &     !
+                 (500.*VISCOS/DEN(INP))/(WLDIST**2*ED(INP))), &     !
                20.*TE(INP)/DOMEGAPL)                                    !%$ WJ
       !ENDIF
       ELSE!IF (EARSM_M) THEN
       KSI=MIN(MAX(SQRT(TE(INP))/(0.09*WLDIST*ED(INP)),            &     !< EARSM 
-                 (500.*VISOB(INP)/DEN(INP))/(WLDIST**2*ED(INP))), &     !
+                 (500.*VISCOS/DEN(INP))/(WLDIST**2*ED(INP))), &     !
              2.*TE(INP)/DOMEGAPL)                                       ! Menter 2009
       ENDIF
 !=====FIND F============================================================

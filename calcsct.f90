@@ -13,7 +13,6 @@
       use variables
       use buoy
       use time_mod
-      use obstacle
       use gradients
 
       implicit none
@@ -84,69 +83,69 @@
 
 
 
-      term1e = (den(inp+nj)*utt(inp+nj)+gradt(1,inp+nj)*prt1*(vis(inp+nj)-visob(inp+nj)))*fx(inp)+ &
-             (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fx(inp))
+      term1e = (den(inp+nj)*utt(inp+nj)+gradt(1,inp+nj)*prt1*(vis(inp+nj)-viscos))*fx(inp)+ &
+             (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-viscos))*(1.-fx(inp))
 
-      term1w = (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-visob(inp)))*fx(inp-nj)+ &
-             (den(inp-nj)*utt(inp-nj)+gradt(1,inp-nj)*prt1*(vis(inp-nj)-visob(inp-nj)))*(1.-fx(inp-nj))
+      term1w = (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-viscos))*fx(inp-nj)+ &
+             (den(inp-nj)*utt(inp-nj)+gradt(1,inp-nj)*prt1*(vis(inp-nj)-viscos))*(1.-fx(inp-nj))
 
-      term1n = (den(inp+1)*utt(inp+1)+gradt(1,inp+1)*prt1*(vis(inp+1)-visob(inp+1)))*fy(inp)+ &
-             (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fy(inp))
+      term1n = (den(inp+1)*utt(inp+1)+gradt(1,inp+1)*prt1*(vis(inp+1)-viscos))*fy(inp)+ &
+             (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-viscos))*(1.-fy(inp))
 
-      term1s = (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-visob(inp)))*fy(inp-1)+ &
-             (den(inp-1)*utt(inp-1)+gradt(1,inp-1)*prt1*(vis(inp-1)-visob(inp-1)))*(1.-fy(inp-1))
+      term1s = (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-viscos))*fy(inp-1)+ &
+             (den(inp-1)*utt(inp-1)+gradt(1,inp-1)*prt1*(vis(inp-1)-viscos))*(1.-fy(inp-1))
 
-      term1t = (den(inp+nij)*utt(inp+nij)+gradt(1,inp+nij)*prt1*(vis(inp+nij)-visob(inp+nij)))*fz(inp)+ &
-             (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fz(inp))
+      term1t = (den(inp+nij)*utt(inp+nij)+gradt(1,inp+nij)*prt1*(vis(inp+nij)-viscos))*fz(inp)+ &
+             (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-viscos))*(1.-fz(inp))
 
-      term1b = (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-visob(inp)))*fz(inp-nij)+ &
-             (den(inp-nij)*utt(inp-nij)+gradt(1,inp-nij)*prt1*(vis(inp-nij)-visob(inp-nij)))*(1.-fz(inp-nij))
+      term1b = (den(inp)*utt(inp)+gradt(1,inp)*prt1*(vis(inp)-viscos))*fz(inp-nij)+ &
+             (den(inp-nij)*utt(inp-nij)+gradt(1,inp-nij)*prt1*(vis(inp-nij)-viscos))*(1.-fz(inp-nij))
 
       dterm1dx = ((term1e-term1w)*ar1x(inp)+ &
                 (term1n-term1s)*ar2x(inp)+ &
                 (term1t-term1b)*ar3x(inp))
 !------------------------------------------------------------
 !
-      term2e = (den(inp+nj)*vtt(inp+nj)+an(inp+nj)*prt1*(vis(inp+nj)-visob(inp+nj)))*fx(inp)+ &
-             (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fx(inp))
+      term2e = (den(inp+nj)*vtt(inp+nj)+an(inp+nj)*prt1*(vis(inp+nj)-viscos))*fx(inp)+ &
+             (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-viscos))*(1.-fx(inp))
 
-      term2w = (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-visob(inp)))*fx(inp-nj)+ &
-             (den(inp-nj)*vtt(inp-nj)+gradt(2,inp-nj)*prt1*(vis(inp-nj)-visob(inp-nj)))*(1.-fx(inp-nj))
+      term2w = (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-viscos))*fx(inp-nj)+ &
+             (den(inp-nj)*vtt(inp-nj)+gradt(2,inp-nj)*prt1*(vis(inp-nj)-viscos))*(1.-fx(inp-nj))
 
-      term2n = (den(inp+1)*vtt(inp+1)+gradt(2,inp+1)*prt1*(vis(inp+1)-visob(inp+1)))*fy(inp)+ &
-             (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fy(inp))
+      term2n = (den(inp+1)*vtt(inp+1)+gradt(2,inp+1)*prt1*(vis(inp+1)-viscos))*fy(inp)+ &
+             (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-viscos))*(1.-fy(inp))
 
-      term2s = (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-visob(inp)))*fy(inp-1)+ &
-             (den(inp-1)*vtt(inp-1)+gradt(2,inp-1)*prt1*(vis(inp-1)-visob(inp-1)))*(1.-fy(inp-1))
+      term2s = (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-viscos))*fy(inp-1)+ &
+             (den(inp-1)*vtt(inp-1)+gradt(2,inp-1)*prt1*(vis(inp-1)-viscos))*(1.-fy(inp-1))
 
-      term2t = (den(inp+nij)*vtt(inp+nij)+gradt(2,inp+nij)*prt1*(vis(inp+nij)-visob(inp+nij)))*fz(inp)+ &
-             (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fz(inp))
+      term2t = (den(inp+nij)*vtt(inp+nij)+gradt(2,inp+nij)*prt1*(vis(inp+nij)-viscos))*fz(inp)+ &
+             (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-viscos))*(1.-fz(inp))
 
-      term2b = (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-visob(inp)))*fz(inp-nij)+ &
-             (den(inp-nij)*vtt(inp-nij)+gradt(2,inp-nij)*prt1*(vis(inp-nij)-visob(inp-nij)))*(1.-fz(inp-nij))
+      term2b = (den(inp)*vtt(inp)+gradt(2,inp)*prt1*(vis(inp)-viscos))*fz(inp-nij)+ &
+             (den(inp-nij)*vtt(inp-nij)+gradt(2,inp-nij)*prt1*(vis(inp-nij)-viscos))*(1.-fz(inp-nij))
 
       dterm2dy = ((term2e-term2w)*ar1y(inp)+ &
                 (term2n-term2s)*ar2y(inp)+ &
                 (term2t-term2b)*ar3y(inp))
 !-----------------------------------------------------------------
 !
-      term3e = (den(inp+nj)*wtt(inp+nj)+gradt(3,inp+nj)*prt1*(vis(inp+nj)-visob(inp+nj)))*fx(inp)+ &
-             (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fx(inp))
+      term3e = (den(inp+nj)*wtt(inp+nj)+gradt(3,inp+nj)*prt1*(vis(inp+nj)-viscos))*fx(inp)+ &
+             (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-viscos))*(1.-fx(inp))
 
-      term3w = (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-visob(inp)))*fx(inp-nj)+ &
-             (den(inp-nj)*wtt(inp-nj)+gradt(3,inp-nj)*prt1*(vis(inp-nj)-visob(inp-nj)))*(1.-fx(inp-nj))
+      term3w = (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-viscos))*fx(inp-nj)+ &
+             (den(inp-nj)*wtt(inp-nj)+gradt(3,inp-nj)*prt1*(vis(inp-nj)-viscos))*(1.-fx(inp-nj))
 
-      term3n = (den(inp+1)*wtt(inp+1)+gradt(3,inp+1)*prt1*(vis(inp+1)-visob(inp+1)))*fy(inp)+ &
-             (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fy(inp))
+      term3n = (den(inp+1)*wtt(inp+1)+gradt(3,inp+1)*prt1*(vis(inp+1)-viscos))*fy(inp)+ &
+             (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-viscos))*(1.-fy(inp))
 
-      term3s = (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-visob(inp)))*fy(inp-1)+ &
-             (den(inp-1)*wtt(inp-1)+gradt(3,inp-1)*prt1*(vis(inp-1)-visob(inp-1)))*(1.-fy(inp-1))
+      term3s = (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-viscos))*fy(inp-1)+ &
+             (den(inp-1)*wtt(inp-1)+gradt(3,inp-1)*prt1*(vis(inp-1)-viscos))*(1.-fy(inp-1))
 
-      term3t = (den(inp+nij)*wtt(inp+nij)+gradt(3,inp+nij)*prt1*(vis(inp+nij)-visob(inp+nij)))*fz(inp)+ &
-             (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-visob(inp)))*(1.-fz(inp))
+      term3t = (den(inp+nij)*wtt(inp+nij)+gradt(3,inp+nij)*prt1*(vis(inp+nij)-viscos))*fz(inp)+ &
+             (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-viscos))*(1.-fz(inp))
 
-      term3b = (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-visob(inp)))*fz(inp-nij)+ &
-             (den(inp-nij)*wtt(inp-nij)+gradt(3,inp-nij)*prt1*(vis(inp-nij)-visob(inp-nij)))*(1.-fz(inp-nij))
+      term3b = (den(inp)*wtt(inp)+gradt(3,inp)*prt1*(vis(inp)-viscos))*fz(inp-nij)+ &
+             (den(inp-nij)*wtt(inp-nij)+gradt(3,inp-nij)*prt1*(vis(inp-nij)-viscos))*(1.-fz(inp-nij))
 
       dterm3dz = ((term3e-term3w)*ar1z(inp)+ &
                 (term3n-term3s)*ar2z(inp)+ &

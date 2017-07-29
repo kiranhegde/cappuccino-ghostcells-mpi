@@ -397,55 +397,55 @@ module gradients
   real(prec),dimension(:,:,:), allocatable ::  dqr             ! when using qr version of the subroutine size(3,6,nxyza)!
 end module gradients
 
-module obstacle
-  !
-  ! variables for defining obsacles.
-  !
-  use types
+! module obstacle
+!   !
+!   ! variables for defining obsacles.
+!   !
+!   use types
    
 
-  integer, dimension(:), allocatable :: ios,ioe,jos,joe,kos,koe
+!   integer, dimension(:), allocatable :: ios,ioe,jos,joe,kos,koe
 
-  real(prec),dimension(:,:), allocatable :: dnow, dnoe,  &
-                                            genow, genoe,  &
-                                            suedow, suedoe
+!   real(prec),dimension(:,:), allocatable :: dnow, dnoe,  &
+!                                             genow, genoe,  &
+!                                             suedow, suedoe
 
-  real(prec),dimension(:,:), allocatable :: dnos, dnon,  &
-                                            genos, genon,  &
-                                            suedos, suedon
+!   real(prec),dimension(:,:), allocatable :: dnos, dnon,  &
+!                                             genos, genon,  &
+!                                             suedos, suedon
 
-  real(prec),dimension(:,:), allocatable :: dnob ,dnot , &
-                                            genot ,genob, &
-                                            suedot ,suedob 
+!   real(prec),dimension(:,:), allocatable :: dnob ,dnot , &
+!                                             genot ,genob, &
+!                                             suedot ,suedob 
 
-  !  used in whole program to store molecular dynamic viscosity 
-  real(prec),dimension(:), allocatable :: visob
+!   !  used in whole program to store molecular dynamic viscosity 
+!   real(prec),dimension(:), allocatable :: visob
 
-  real(prec),dimension(:,:), allocatable :: tobwest, &
-                                            tobeast, &
-                                            cobwest, &
-                                            cobeast
+!   real(prec),dimension(:,:), allocatable :: tobwest, &
+!                                             tobeast, &
+!                                             cobwest, &
+!                                             cobeast
 
-  real(prec),dimension(:,:), allocatable :: tobsouth, &
-                                            tobnorth, &
-                                            cobsouth, &
-                                            cobnorth
+!   real(prec),dimension(:,:), allocatable :: tobsouth, &
+!                                             tobnorth, &
+!                                             cobsouth, &
+!                                             cobnorth
 
-  real(prec),dimension(:,:), allocatable :: tobbottom, &
-                                                   tobtop, &
-                                                   cobbottom, &
-                                                   cobtop
+!   real(prec),dimension(:,:), allocatable :: tobbottom, &
+!                                                    tobtop, &
+!                                                    cobbottom, &
+!                                                    cobtop
 
-  integer, dimension(:,:), allocatable :: typobw, typobe, &
-                                          typobtw, typobte, &
-                                          typobcw, typobce
+!   integer, dimension(:,:), allocatable :: typobw, typobe, &
+!                                           typobtw, typobte, &
+!                                           typobcw, typobce
 
-  integer, dimension(:,:), allocatable :: typobs, typobn, &
-                                          typobts, typobtn, &
-                                          typobcs, typobcn                    
+!   integer, dimension(:,:), allocatable :: typobs, typobn, &
+!                                           typobts, typobtn, &
+!                                           typobcs, typobcn                    
 
-  integer, dimension(:,:), allocatable :: typobb, typobt, &
-                                          typobtb, typobtt, & 
-                                          typobcb, typobct
+!   integer, dimension(:,:), allocatable :: typobb, typobt, &
+!                                           typobtb, typobtt, & 
+!                                           typobcb, typobct
 
-end module obstacle
+! end module obstacle

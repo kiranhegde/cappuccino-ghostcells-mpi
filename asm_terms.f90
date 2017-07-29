@@ -14,7 +14,6 @@
       USE COEF
       USE COEFB
       USE VARIABLES
-      USE OBSTACLE
       USE GRADIENTS
 
       IMPLICIT NONE

@@ -29,7 +29,8 @@ program cappuccino_ghostcells_mpi
 
   include 'mpif.h'
 
-  integer :: ijk, i, j, k, inp, itimes, itimee
+  integer :: i, j, k, inp
+  integer :: itimes, itimee
   integer :: narg
   real(prec) :: source
   real(prec) :: magUbarStar, rUAw, gragPplus, flowDirection
@@ -44,15 +45,15 @@ program cappuccino_ghostcells_mpi
   !----------------------------------------------------------------------
   ! MPI start up
 
-    call MPI_INIT(ierr)                   ! <- ierr=0 if successful
+    call MPI_INIT(ierr)                   
 
-    call MPI_COMM_SIZE(MPI_COMM_WORLD, &  ! <- ???
-                                 nproc,&  ! <- Get the total number of PEs
-                                 ierr  )  ! <- ierr=0 if successful
+    call MPI_COMM_SIZE(MPI_COMM_WORLD, & 
+                                 nproc,&  
+                                 ierr  )  
 
-    call MPI_COMM_RANK(MPI_COMM_WORLD, &  ! <- ???
-                                 myid, &  ! <- Get the ID of the PE
-                                 ierr  )  ! <- ierr=0 if successful
+    call MPI_COMM_RANK(MPI_COMM_WORLD, & 
+                                 myid, &  
+                                 ierr  )  
     
     this = myid + 1
 
@@ -63,6 +64,7 @@ program cappuccino_ghostcells_mpi
 
     write(*,'(2(a,i2))') ' np = ', nproc, ' myid = ', myid
   !----------------------------------------------------------------------
+
 
 
   ! Check command line arguments
@@ -78,7 +80,6 @@ program cappuccino_ghostcells_mpi
   call get_command_argument(5,restart_file)
   call get_command_argument(6,out_folder_path)
 
-
   if (myid .eq. 0) then
 
     ! Open files
@@ -89,18 +90,11 @@ program cappuccino_ghostcells_mpi
 
   endif
 
-
   ! Read input file
   call read_input
 
   ! Read grid file
   call read_grid
-
-
-      CALL MPI_BARRIER(MPI_COMM_WORLD,IERR)
-      ierr = 1
-      CALL MPI_FINALIZE(ierr)
-      STOP
 
   ! Initialisation
   call init
@@ -119,62 +113,77 @@ program cappuccino_ghostcells_mpi
   end if
 
   ! Initial output
-  call print_header
+  if (myid .eq. 0) then
+    call print_header
+  endif
 
 !
-!--------------------------------------------------------------------------------------------------
-!     [t i m e   l o o p : ]
-!--------------------------------------------------------------------------------------------------
-!
-  if(.not.lread) time=0.0d0
+!===============================================
+!     T i m e   l o o p : 
+!===============================================
+
+  write(6,'(a)') ' '
+  write(6,'(a)') '  Start iteration!'
+  write(6,'(a)') ' '
+
   itimes=itime+1 
   itimee=itime+numstep
 
-  time_loop: do itime=itimes,itimee
+  time_loop: do itime=itimes,itimee 
+!
+!===============================================
+!   Update variables : 
+!===============================================
 
-    ! Shift variables in time:
-    do ijk=1,nijk
-       if(bdf) then
-       uoo(ijk)=uo(ijk)
-       voo(ijk)=vo(ijk)
-       woo(ijk)=wo(ijk)
-       too(ijk)=to(ijk)
-       teoo(ijk)=teo(ijk)
-       edoo(ijk)=edo(ijk)
-       vartoo(ijk)=varto(ijk)
-       conoo(ijk)=cono(ijk)
-       endif
-       uo(ijk)=u(ijk)
-       vo(ijk)=v(ijk)
-       wo(ijk)=w(ijk)
-       to(ijk)=t(ijk)
-       teo(ijk)=te(ijk)
-       edo(ijk)=ed(ijk)            
-       varto(ijk)=vart(ijk)
-       cono(ijk)=con(ijk)
-    end do
-
-    ! Set inlet boundary conditions
+    if(bdf) then
+      uoo = uo 
+      voo = vo 
+      woo = wo 
+      teoo = teo 
+      edoo = edo
+      if (lcal(ien)) too = to 
+      if (lcal(ivart)) vartoo = varto 
+      if (lcal(icon)) conoo = cono 
+    endif
+    uo = u 
+    vo = v 
+    wo = w 
+    teo = te 
+    edo = ed 
+    if (lcal(ien)) to = t         
+    if (lcal(ivart)) varto = vart 
+    if (lcal(icon)) cono = con 
+!
+!===============================================
+!.....Set inlet boundary conditions at every timestep
+!===============================================
     if(itime.eq.itimes) call bcin
-
+!
+!===============================================
+!.....ITERATION CONTROL MONITOR
+!===============================================
+!
     ! Courant number report:
     include 'CourantNo.h'
 
+    call abort_mission
+
 ! 
-!--------------------------------------------------------------------------------------------------
-!.....ITERATION LOOP
-!--------------------------------------------------------------------------------------------------
+!===============================================
+!.....ITERATION loop
+!===============================================
 !
     iteration_loop: do iter=1,maxit
 
-      call cpu_time(start)
+      if (myid == 0 ) then
+        call cpu_time(start)
+      endif
 
       ! Update values at ghost cells
       call update_values_at_ghostcells
 
       ! Calculate velocities. Momentum predictor for PISO.
       if(lcal(iu))    call calcuvw
-      ! CALL CORVEL
       ! Update OUTLET BC.
       if(lcal(iu).and..not.const_mflux)    call outbc  
       ! Pressure-velocity coupling. Two options: SIMPLE and PISO
@@ -193,9 +202,13 @@ program cappuccino_ghostcells_mpi
       ! The SGS viscosity of les model
       if(lcal(ivis) .and. lles)         call calc_vis_les
 
-      call cpu_time(finish)
-      write(66,'(a,g0.3,a)') 'ExecutionTime = ',finish-start,' s'
-      write(66,*)
+      call synchronize_processes 
+
+      if (myid == 0) then
+        call cpu_time(finish)
+        write(66,'(a,g0.3,a)') 'ExecutionTime = ',finish-start,' s'
+        write(66,*)
+      endif
 
       !---------------------------------------------------------------------------------------------
       ! Residual normalization, convergence check  
@@ -203,16 +216,15 @@ program cappuccino_ghostcells_mpi
       do i=1,nphi
       resor(i)=resor(i)*snorin(i)
       end do 
-      ! resor(ied)=resor(ied)*small
-      ! resor(icon)=resor(icon)*small
-
-      ! Write to monitor file
-      ! include 'simpleMonitorResiduals.h'
 
       source=max(resor(iu),resor(iv),resor(iw),resor(ip)) 
+
+      ! Now find global maximum
+      call global_max( source )
+
       if(source.gt.slarge) then
-          write(66,"(//,10x,a)") "*** Program terminated -  iterations diverge ***" 
-          stop ! zavrsi program
+        if ( myid == 0 ) write(66,"(//,10x,a)") "*** Program terminated -  iterations diverge ***" 
+        call abort_mission
       endif
 
       !---------------------------------------------------------------------------------------------
@@ -282,25 +294,13 @@ program cappuccino_ghostcells_mpi
       if(mod(itime,nzapis).eq.0.and.itime.ne.numstep) call writefiles
     endif
 
-    if(ltransient) call flush(66)
+    if( ltransient .and. myid.eq.0 ) call flush(66)
  
   end do time_loop
 
   ! False time stepping comes here after time loop with exit command
 
-  call corvel
-  if(loute) call output               !<- 
   if(loute) call report_wall_stresses !<- vrati kad ti bude trebalo y+, Tau na zidovima
-
-
-!--------------------------------------------------------------------------------------------------
-!.....Calculate Nusselt number distributions:
-!--------------------------------------------------------------------------------------------------
-  ! if(lthermbc.eq.1) then
-  ! call nusnumb
-  ! write(90,*) time,bnuselt1,bnuselt2
-  ! rewind 90
-  ! end if
 
   ! Write field values for the next run 
   if(lwrite) call writefiles
@@ -309,7 +309,7 @@ program cappuccino_ghostcells_mpi
 
   !----------------------------------------------------------------------
   ! MPI final call
-    call MPI_Finalize(ierr) ! ierr=0 if successful
+    call MPI_Finalize(ierr)
 
 end program
 

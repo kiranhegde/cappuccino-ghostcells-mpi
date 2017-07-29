@@ -17,32 +17,22 @@
   USE PARAMETERS
   USE INDEXES
   USE GEOMETRY
-  USE COEF
   USE VARIABLES
-  USE BC
   USE BOUNDC
-  USE TITLE_MOD
-  USE BUOY
   USE TIME_MOD
-  USE PRINTING
-  USE OBSTACLE
   USE INLET
   USE GRADIENTS
   USE OMEGA_Turb_Models
-  use fieldManipulation
 
   IMPLICIT NONE
 !
 !***********************************************************************
 !
-  integer :: I, J, K, INP,intc,inbc
-  integer :: inn,inc,ins,inb,inbs
-  real(prec) :: xf,yf,zf
+  integer :: i, j, k, intc, inbc
+  integer :: inp,ins,inb,inbs,idew,idns,idtb
   real(prec) :: ednom, tenom
   real(prec) :: dxet,dxzd,dyet,dyzd,dzet,dzzd
   real(prec) :: perturb
-  ! real(prec) :: zz
-  ! real(prec) :: UST 
 
   ! Power law profile for hills:
   !REAL(PREC), PARAMETER :: blthick = 0.2 
@@ -57,14 +47,18 @@
 !
 
   ! East faces  
+  idew = nj
+  idns = 1
+  idtb = nij
+
   do k=2,nkm
   do i=1,nim
   do j=2,njm
 
     inp=lk(k)+li(i)+j
-    ins=inp-1
-    inb=inp-nij
-    inbs=inb-1
+    ins=inp-idns
+    inb=inp-idtb
+    inbs=inb-idns
 
     dxet=0.5*(x(inp)-x(ins)+x(inb)-x(inbs))
     dyet=0.5*(y(inp)-y(ins)+y(inb)-y(inbs))
@@ -78,44 +72,23 @@
     ar1y(inp)=dxzd*dzet-dxet*dzzd
     ar1z(inp)=dxet*dyzd-dyet*dxzd
 
-
-    ! interpolation factor lambda = pj'/ pn 
-    inn=inp+nj
-
-    xf = 0.25d0*(x(inp)+x(ins)+x(inb)+x(inbs))
-    yf = 0.25d0*(y(inp)+y(ins)+y(inb)+y(inbs))
-    zf = 0.25d0*(z(inp)+z(ins)+z(inb)+z(inbs))
-
-    !Treba naci j' tacku na kojoj se sece ravan face-a i linija spajanja celijskih centara => find_intersection_point
-    call find_intersection_point( &
-  !            plane defined by face corner, bottom and south:
-           x(inp),y(inp),z(inp),&
-           x(ins),y(ins),z(ins), &
-           x(inb),y(inb),z(inb), &
-  !            line defined by cell center and neighbour center:
-           xc(inp),yc(inp),zc(inp), &
-           xc(inn),yc(inn),zc(inn), &
-  !            intersection point:
-           xf,yf,zf &
-           )
-
-    fx(inp) =   sqrt( (xf-xc(inp))**2 + (yf-yc(inp))**2 + (zf-zc(inp))**2 )  &
-        / ( sqrt( (xc(inn)-xc(inp))**2 + (yc(inn)-yc(inp))**2 + (zc(inn)-zc(inp))**2 ) + small )
-
-
   enddo
   enddo
   enddo
 
   ! North faces
+  idew = 1
+  idns = nj
+  idtb = nij
+
   do k=2,nkm
   do i=2,nim
   do j=1,njm
 
-    inp=lk(k)+li(i)+j-nj
-    ins=lk(k)+li(i)+j
-    inb=inp-nij
-    inbs=ins-nij
+    inp=lk(k)+li(i)+j
+    ins=inp-idns
+    inb=inp-idtb
+    inbs=inb-idns
 
     dxet=0.5*(x(inp)-x(ins)+x(inb)-x(inbs))
     dyet=0.5*(y(inp)-y(ins)+y(inb)-y(inbs))
@@ -129,45 +102,22 @@
     ar2y(inp)=dxzd*dzet-dxet*dzzd
     ar2z(inp)=dxet*dyzd-dyet*dxzd
 
-
-    ! interpolation factor lambda = pj'/ pn 
-    inc=lk(k)+li(i)+j
-    inn=inp+1
-
-    xf = 0.25d0*(x(inp)+x(ins)+x(inb)+x(inbs))
-    yf = 0.25d0*(y(inp)+y(ins)+y(inb)+y(inbs))
-    zf = 0.25d0*(z(inp)+z(ins)+z(inb)+z(inbs))
-
-    !Treba naci j' tacku na kojoj se sece ravan face-a i linija spajanja celijskih centara => find_intersection_point
-    call find_intersection_point( &
-  !            plane defined by face corner, bottom and south:
-           x(inp),y(inp),z(inp),&
-           x(ins),y(ins),z(ins), &
-           x(inb),y(inb),z(inb), &
-  !            line defined by cell center and neighbour center:
-           xc(inc),yc(inc),zc(inc), &
-           xc(inn),yc(inn),zc(inn), &
-  !            intersection point:
-           xf,yf,zf &
-           )
-
-    fy(inc) =   sqrt( (xf-xc(inc))**2 + (yf-yc(inc))**2 + (zf-zc(inc))**2 )  &
-        / ( sqrt( (xc(inn)-xc(inc))**2 + (yc(inn)-yc(inc))**2 + (zc(inn)-zc(inc))**2 ) + small )
-
-
   enddo
   enddo
   enddo
 
   ! Top faces
+  idew = nij
+  idns = 1 
+  idtb = nj
   do k=1,nkm
   do i=2,nim
   do j=2,njm
 
-    inp=lk(k)+li(i)+j-nj
-    ins=inp-1
-    inb=lk(k)+li(i)+j
-    inbs=inb-1
+    inp=lk(k)+li(i)+j
+    ins=inp-idns
+    inb=inp-idtb
+    inbs=inb-idns
 
     dxet=0.5*(x(inp)-x(ins)+x(inb)-x(inbs))
     dyet=0.5*(y(inp)-y(ins)+y(inb)-y(inbs))
@@ -179,33 +129,7 @@
 
     ar3x(inp)=dyet*dzzd-dyzd*dzet
     ar3y(inp)=dxzd*dzet-dxet*dzzd
-    ar3z(inp)=dxet*dyzd-dyet*dxzd
-
-
-  !   ! interpolation factor lambda = pj'/ pn 
-  !   inc=lk(k)+li(i)+j
-  !   inn=inp+nij
-
-  !   xf = 0.25d0*(x(inp)+x(ins)+x(inb)+x(inbs))
-  !   yf = 0.25d0*(y(inp)+y(ins)+y(inb)+y(inbs))
-  !   zf = 0.25d0*(z(inp)+z(ins)+z(inb)+z(inbs))
-
-  !   !Treba naci j' tacku na kojoj se sece ravan face-a i linija spajanja celijskih centara => find_intersection_point
-  !   call find_intersection_point( &
-  ! !            plane defined by face corner, bottom and south:
-  !          x(inp),y(inp),z(inp),&
-  !          x(ins),y(ins),z(ins), &
-  !          x(inb),y(inb),z(inb), &
-  ! !            line defined by cell center and neighbour center:
-  !          xc(inc),yc(inc),zc(inc), &
-  !          xc(inn),yc(inn),zc(inn), &
-  ! !            intersection point:
-  !          xf,yf,zf &
-  !          )
-    
-  !   fz(inp) =   sqrt( (xf-xc(inc))**2 + (yf-yc(inc))**2 + (zf-zc(inc))**2 )  &
-  !       / ( sqrt( (xc(inn)-xc(inc))**2 + (yc(inn)-yc(inc))**2 + (zc(inn)-zc(inc))**2 ) + small )
-      
+    ar3z(inp)=dxet*dyzd-dyet*dxzd      
 
   enddo
   enddo
@@ -215,10 +139,9 @@
 !
 ! Calculation of interpolation factors - new method
 !.......................................................................
-
-  ! call intfac(nj,1,nij, fx)
-  ! call intfac(1,nj,nij, fy)
-  ! call intfac(nij,1,nj, fz)
+  call intfac(nj,1,nij, fx)
+  call intfac(1,nj,nij, fy)
+  call intfac(nij,1,nj, fz)
 
 
 
@@ -535,11 +458,13 @@
 
   ! Molecular viscosity
   VIS(INP)=VISCOS
-  VISOB(INP)=VISCOS
+
   ! Temperature
   T(INP)=TIN
+
   ! Temperature variance
   VART(INP)=VARTIN
+
   ! Concentration
   CON(INP)=CONIN
 

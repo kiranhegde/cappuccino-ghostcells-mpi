@@ -15,7 +15,6 @@
   use time_mod
   use title_mod
   use statistics
-  use obstacle
   use nusselt
   use wall
   use inlet
@@ -541,7 +540,6 @@
       USE TIME_MOD
       USE TITLE_MOD
       USE STATISTICS
-      USE OBSTACLE
       USE NUSSELT
       USE WALL
       USE INLET
@@ -793,78 +791,6 @@
       if (allocated(CONNORTH)) deallocate(CONNORTH)
       if (allocated(CONTOP)) deallocate(CONTOP)
       if (allocated(CONBOTTOM)) deallocate(CONBOTTOM)
-
-!     OBSTACLES
-
-      if (allocated(VISOB)) deallocate(VISOB) !Replace all instances of VISOB with VISCOS
-                          ! in part of the code not dedicated to obstacles!
-                          ! then move VISOB inside of IF OBSTACLES
-      !IF(IOBST.EQ.1) THEN 
-
-        if (allocated(IOS)) deallocate(IOS)
-        if (allocated(IOE)) deallocate(IOE)
-        if (allocated(JOS)) deallocate(JOS)
-        if (allocated(JOE)) deallocate(JOE)
-        if (allocated(KOS)) deallocate(KOS)
-        if (allocated(KOE)) deallocate(KOE)
-
-        if (allocated(DNOW)) deallocate(DNOW)
-        if (allocated(DNOE)) deallocate(DNOE)
-        if (allocated(DNOS)) deallocate(DNOS)
-        if (allocated(DNON)) deallocate(DNON)
-        if (allocated(DNOB)) deallocate(DNOB)
-        if (allocated(DNOT)) deallocate(DNOT)
-
-        if (allocated(GENOW)) deallocate(GENOW)  
-        if (allocated(GENOE)) deallocate(GENOE)
-        if (allocated(GENOS)) deallocate(GENOS)
-        if (allocated(GENON)) deallocate(GENON)
-        if (allocated(GENOB)) deallocate(GENOB)
-        if (allocated(GENOT)) deallocate(GENOT)
-
-        if (allocated(SUEDOW)) deallocate(SUEDOW)
-        if (allocated(SUEDOE)) deallocate(SUEDOE)
-        if (allocated(SUEDOS)) deallocate(SUEDOS)
-        if (allocated(SUEDON)) deallocate(SUEDON)
-        if (allocated(SUEDOB)) deallocate(SUEDOB)
-        if (allocated(SUEDOT)) deallocate(SUEDOT)
-
-        if (allocated(TOBEAST)) deallocate(TOBEAST)
-        if (allocated(TOBWEST)) deallocate(TOBWEST)
-        if (allocated(TOBSOUTH)) deallocate(TOBSOUTH)
-        if (allocated(TOBNORTH)) deallocate(TOBNORTH)
-        if (allocated(TOBBOTTOM)) deallocate(TOBBOTTOM)
-        if (allocated(TOBTOP)) deallocate(TOBTOP)
-
-        if (allocated(COBEAST)) deallocate(COBEAST)
-        if (allocated(COBWEST)) deallocate(COBWEST)
-        if (allocated(COBSOUTH)) deallocate(COBSOUTH)
-        if (allocated(COBNORTH)) deallocate(COBNORTH)
-        if (allocated(COBBOTTOM)) deallocate(COBBOTTOM)
-        if (allocated(COBTOP)) deallocate(COBTOP)
-
-        if (allocated(TYPOBW)) deallocate(TYPOBW)
-        if (allocated(TYPOBE)) deallocate(TYPOBE)
-        if (allocated(TYPOBN)) deallocate(TYPOBN)
-        if (allocated(TYPOBS)) deallocate(TYPOBS)
-        if (allocated(TYPOBB)) deallocate(TYPOBB)
-        if (allocated(TYPOBT)) deallocate(TYPOBT)
-
-        if (allocated(TYPOBTW)) deallocate(TYPOBTW)
-        if (allocated(TYPOBTE)) deallocate(TYPOBTE)
-        if (allocated(TYPOBTN)) deallocate(TYPOBTN)
-        if (allocated(TYPOBTS)) deallocate(TYPOBTS)
-        if (allocated(TYPOBTB)) deallocate(TYPOBTB)
-        if (allocated(TYPOBTT)) deallocate(TYPOBTT)
-
-        if (allocated(TYPOBCW)) deallocate(TYPOBCW)
-        if (allocated(TYPOBCE)) deallocate(TYPOBCE)
-        if (allocated(TYPOBCN)) deallocate(TYPOBCN)
-        if (allocated(TYPOBCS)) deallocate(TYPOBCS)
-        if (allocated(TYPOBCB)) deallocate(TYPOBCB)
-        if (allocated(TYPOBCT)) deallocate(TYPOBCT)
-
-      !ENDIF 
 
 !     GRADIENT
       if (allocated(gradu)) deallocate(gradu)

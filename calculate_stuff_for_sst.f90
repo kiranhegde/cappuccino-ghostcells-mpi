@@ -12,7 +12,6 @@
       USE COEFB
       USE VARIABLES
       USE BOUNDC
-      USE OBSTACLE
       USE GRADIENTS
       USE OMEGA_Turb_Models
       USE fieldManipulation

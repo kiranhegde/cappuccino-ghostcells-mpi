@@ -19,8 +19,8 @@ subroutine read_input
   integer :: i
 
 
-! Root processor opens files
-if (myid .eq. 0) then
+  ! Root processor opens files
+  if (myid .eq. 0) then
 
   open(unit=5,file=input_file)
   rewind 5
@@ -94,7 +94,8 @@ if (myid .eq. 0) then
   write(66,'(a)') '--------------------------------------------------------------------------------'
   write(66,'(a)') ' '
 
-endif
+  endif
+
 
 ! Broadcast input data to other processes
   call MPI_BCAST(title,70,MPI_CHARACTER,0,MPI_COMM_WORLD,IERR)
@@ -293,7 +294,10 @@ endif
   call MPI_BCAST(conumfix,1,MPI_LOGICAL,0,MPI_COMM_WORLD,IERR)
   call MPI_BCAST(conumfixvalue,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,IERR)
 
-if (myid == 0) then
+  ! Izgubi mu se pojam koji je process rank pa moram ovo da pozovem:
+  call MPI_COMM_RANK( MPI_COMM_WORLD, myid, ierr  ) 
+
+if (myid .eq. 0) then
   write(66,*)' '
   write(66,*)'  ->input data O.K.'
   write(66,*)' '

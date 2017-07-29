@@ -241,7 +241,7 @@ call exchange(xc)
 
 print*,'ID: ',this-1,'Cell centers: ', xc(bufind(:))
 
-print*,'Here',this-1
+print*,'Here',myid
 
 
 end subroutine read_grid

@@ -1,6 +1,6 @@
 !***********************************************************************
 !
-subroutine update_values_at_ghostcells_nonperiodic
+subroutine update_values_at_ghostcells
 !
 ! Ghost cells are inner cells here - the first layer of inner cells and
 ! last layer of inner cells. By inner cells I mean those that participate

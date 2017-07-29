@@ -12,7 +12,6 @@
   use parameters
   use indexes
   use geometry
-  use obstacle
 
   implicit none
 !
@@ -79,5 +78,4 @@
   enddo
   enddo
 
-  return
   end subroutine

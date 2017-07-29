@@ -66,7 +66,7 @@
       RES(IJK)=AE(IJK)*FI(IJK+NJ)+AW(IJK)*FI(IJK-NJ)+AN(IJK)* &
              FI(IJK+1)+AS(IJK)*FI(IJK-1)+AT(IJK)*FI(IJK+NIJ)+ &
              AB(IJK)*FI(IJK-NIJ)+SU(IJK)-AP(IJK)*FI(IJK)
-      RES1=RES1+DABS(RES(IJK))
+      RES1=RES1+ABS(RES(IJK))
       RES(IJK)=(RES(IJK)-BB(IJK)*RES(IJK-NIJ)-BW(IJK)*RES(IJK-NJ)- &
             BS(IJK)*RES(IJK-1))*BP(IJK)
 

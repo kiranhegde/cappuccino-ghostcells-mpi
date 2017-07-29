@@ -26,9 +26,9 @@
 !}
 !*/
 
- su = 0.
- suma = 0.
- do k=3,nkmm; do i=3,nimm; do j=3,njmm
+su = 0.
+suma = 0.
+do k=3,nkmm; do i=3,nimm; do j=3,njmm
       inp=lk(k)+li(i)+j
 
       su(inp) = abs( f1(inp) ) + abs( f1(inp-nj) ) + &
@@ -41,30 +41,37 @@
 
       meanCoNum = meanCoNum + su(inp)
 
- enddo; enddo; enddo
+enddo; enddo; enddo
 
-    CoNum = 0.5*CoNum*timestep
-    meanCoNum = 0.5*meanCoNum/suma*timestep
+      CoNum = 0.5*CoNum*timestep
+      meanCoNum = 0.5*meanCoNum/suma*timestep
 
-  !// If we keep the value of Courant Number fixed
-  if(CoNumFix) then
-      dt = timestep
-      timestep = CoNumFixValue/CoNum * timestep
+! Find global maximum Courant number in the whole field.
+call global_max(CoNum)
 
-      CoNum = CoNum * timestep/dt
-      meanCoNum  = meanCoNum * timestep/dt
-  endif
+!// If we keep the value of Courant Number fixed
+if(CoNumFix) then
+    dt = timestep
+    timestep = CoNumFixValue/CoNum * timestep
 
-  time = time + timestep
+    CoNum = CoNum * timestep/dt
+    meanCoNum  = meanCoNum * timestep/dt
+endif
 
+time = time + timestep
+
+
+if(myid == 0) then
  write(66,*)
- write(66,'(a,i0,a,es10.3,a,f12.6)') " Time step no. : ",ITIME," dt : ",timestep," Time = ",TIME
+ write(66,'(a,i0,a,es10.3,a,f12.6)') " Time step no. : ",ITIME, &
+&                                    " dt : ",timestep,         &
+&                                    " Time = ",TIME
  write(66,*)
 
  write(66,'(2(a,es10.3))') "Courant Number mean: ", meanCoNum, &
 &                          " max: ", CoNum
-
-
-
 endif
+
+
+endif 
 !// ************************************************************************* //

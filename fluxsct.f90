@@ -15,7 +15,6 @@
       USE VARIABLES
       USE BUOY
       USE TIME_MOD
-      USE OBSTACLE
       USE GRADIENTS
 
       IMPLICIT NONE
@@ -38,7 +37,7 @@
       INTEGER :: IJK
 !@      INTEGER :: indx
       REAL(PREC) :: GAM,PRTR,FXE,FXP,ARE,VOLE, &
-                    VISTE,VISOBE,GAME,DE, &
+                    VISTE,GAME,DE, &
                     CE,CP,FII,FM
       REAL(PREC) :: XF,YF,ZF,XI,YI,ZI
       REAL(PREC) :: ARX,ARY,ARZ
@@ -54,9 +53,9 @@
 !-------------------------------------------
 !.....CALCULATE EAST,TOP,NORTH  CELL FACE
 !-------------------------------------------
-      DO 100 K=2,NKE
-      DO 100 I=2,NIE
-      DO 100 J=2,NJE
+      DO K=2,NKE
+      DO I=2,NIE
+      DO J=2,NJE
       INP=LK(K)+LI(I)+J
       INE=INP+IDEW
       INS=INP-IDNS
@@ -120,15 +119,14 @@
 !.....CELL FACE DIFFUSSION COEFFICIENT
       GAME=PRTR*(VIS(INP)*FXP+VIS(INE)*FXE)/VOLE
 
-      VISTE=(VIS(INP)-VISOB(INP))*FXP+(VIS(INE)-VISOB(INE))*FXE
-      VISOBE=VISOB(INP)*FXP+VISOB(INE)*FXE
+      VISTE=(VIS(INP)-VISCOS)*FXP+(VIS(INE)-VISCOS)*FXE
 
-      IF(IFI.EQ.IEN) GAME=(VISTE*PRT1+VISOBE*PRM1)
-      IF(IFI.EQ.IVART)GAME=(VISTE*PRTR+VISOBE*PRM1)
+      IF(IFI.EQ.IEN) GAME=(VISTE*PRT1+VISCOS*PRM1)
+      IF(IFI.EQ.IVART)GAME=(VISTE*PRTR+VISCOS*PRM1)
 !-----------------------------------------------------------
 !     [Pr=nu/alfa; Sc=nu/beta; Le=Sc/Pr ]: Le=1.
 !-----------------------------------------------------------
-      IF(IFI.EQ.ICON) GAME=(VISTE*PRTR+VISOBE*PRM1)
+      IF(IFI.EQ.ICON) GAME=(VISTE*PRTR+VISCOS*PRM1)
 
 !++++VALUES OF FI AT CELL FACE CENTER and EXPLICIT DIFFUSION FLUXES+++++++
 
@@ -191,7 +189,9 @@
       SU(INP)=SU(INP)+SUADD
 !-------------------------------------------------------
       BP(INE)=SUADD
-  100 CONTINUE
+      END DO !J-loop
+      END DO !I-loop
+      END DO !K-loop
 !-------------------------------------------------------
 !     [VECTORIZATION ROUTINE:  ]
 !-------------------------------------------------------

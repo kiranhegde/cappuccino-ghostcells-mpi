@@ -18,7 +18,6 @@
   use boundc
   use buoy
   use time_mod
-  use obstacle
 
  implicit none
 !
