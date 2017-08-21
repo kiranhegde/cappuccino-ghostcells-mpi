@@ -1,188 +1,200 @@
 !***********************************************************************
 !
-      SUBROUTINE PCGSIP(FI,IFI)
+  subroutine pcgsip(fi,ifi)
 !
 !***********************************************************************
 !
-!    This routine incorporates the SIP Preconditioned 
-!    Conjugate Gradient solver for symmetric matrices in 3D problems
+!    This routine incorporates the sip preconditioned 
+!    conjugate gradient solver for symmetric matrices in 3d problems
 !    with seven-diagonal matrix structure.
 !
 !    Written by Nikola Mirkov, 28.01.2014. nmirkov@vinca.rs
 !
 !***********************************************************************
 !
-      USE TYPES
-      USE PARAMETERS
-      USE INDEXES
-      USE COEF
-      USE COEFB
-      USE TITLE_MOD
+  use types
+  use parameters
+  use indexes
+  use coef
+  use coefb
+  use title_mod
 
-      IMPLICIT NONE
+  implicit none
 !
 !***********************************************************************
 !
-      INTEGER, INTENT(IN) :: IFI
-      REAL(PREC), DIMENSION(NXYZA) :: FI 
+  integer, intent(in) :: ifi
+  real(prec), dimension(nxyza) :: fi 
 
 !
-!     LOCAL VARIABLES
+! Local variables
 !
-      INTEGER :: I, J, K, IJK, NS, L
-      REAL(PREC), DIMENSION(NXYZA) :: PK,ZK
-      REAL(PREC) :: RSM, RESMAX, RES0, RESL, P1, P2, P3
-      REAL(PREC) :: S0, SK, ALF, BET, PKAPK
+  integer :: i, j, k, ijk, ns, l
+  real(prec), dimension(nxyza) :: pk,zk
+  real(prec) :: rsm, resmax, res0, resl, p1, p2, p3
+  real(prec) :: s0, sk, alf, bet, pkapk
 
-!.....MAX NO. OF INNER ITERS
-      RESMAX = SOR(IFI)
+! max no. of inner iters
+  resmax = sor(ifi)
 !
-!.....INITALIZE WORKING ARRAYS
+! initalize working arrays
 !
-      DO IJK=1,NIJK
-        PK(IJK)=0.0D0
-        ZK(IJK)=0.0D0
-        RES(IJK)=0.0D0
-      END DO
+  pk = 0.0_dp
+  zk = 0.0_dp
+  res = 0.0_dp
 !
-!.....CALCULATE INITIAL RESIDUAL VECTOR AND THE NORM
+! Calculate initial residual vector and the norm
 !
-      RES0=0.0D0
-      DO K=3,NKMM
-        DO I=3,NIMM
-          DO J=3,NJMM 
-            IJK=LK(K)+LI(I)+J
-             RES(IJK)=AE(IJK)*FI(IJK+NJ)+AW(IJK)*FI(IJK-NJ)+AN(IJK)* &
-             FI(IJK+1)+AS(IJK)*FI(IJK-1)+AT(IJK)*FI(IJK+NIJ)+ &
-             AB(IJK)*FI(IJK-NIJ)+SU(IJK)-AP(IJK)*FI(IJK)
-            RES0=RES0+ABS(RES(IJK))
-          END DO
-        END DO
-      END DO
-!
-!.....IF LTEST=True, PRINT THE NORM 
-!
-      IF(LTEST) WRITE(66,'(a,1PE10.3)') '                    RES0 = ',RES0
+  res0=0.0d0
+  do k=3,nkmm
+    do i=3,nimm
+      do j=3,njmm 
+        ijk=lk(k)+li(i)+j
+         res(ijk)=ae(ijk)*fi(ijk+nj)+aw(ijk)*fi(ijk-nj)+an(ijk)* &
+         fi(ijk+1)+as(ijk)*fi(ijk-1)+at(ijk)*fi(ijk+nij)+ &
+         ab(ijk)*fi(ijk-nij)+su(ijk)-ap(ijk)*fi(ijk)
+        res0=res0+abs(res(ijk))
+      end do
+    end do
+  end do
 
-!.....CALCULATE COEFFICIENTS OF  L  AND  U  MATRICES USING SIP
-      DO K=3,NKMM
-        DO I=3,NIMM
-          DO J=3,NJMM 
-          IJK=LK(K)+LI(I)+J
-          BB(IJK)=-AB(IJK)/(1.+ALFA*(BN(IJK-NIJ)+BE(IJK-NIJ)))
-          BW(IJK)=-AW(IJK)/(1.+ALFA*(BN(IJK-NJ)+BT(IJK-NJ)))
-          BS(IJK)=-AS(IJK)/(1.+ALFA*(BE(IJK-1)+BT(IJK-1)))
-          P1=ALFA*(BB(IJK)*BN(IJK-NIJ)+BW(IJK)*BN(IJK-NJ))
-          P2=ALFA*(BB(IJK)*BE(IJK-NIJ)+BS(IJK)*BE(IJK-1))
-          P3=ALFA*(BW(IJK)*BT(IJK-NJ)+BS(IJK)*BT(IJK-1))
-          BP(IJK)=1./(AP(IJK)+P1+P2+P3 &
-            -BB(IJK)*BT(IJK-NIJ) &
-            -BW(IJK)*BE(IJK-NJ) &
-            -BS(IJK)*BN(IJK-1)+SMALL)
-           BN(IJK)=(-AN(IJK)-P1)*BP(IJK)
-           BE(IJK)=(-AE(IJK)-P2)*BP(IJK)
-           BT(IJK)=(-AT(IJK)-P3)*BP(IJK)
-          END DO
-        END DO
-      END DO
+  call global_sum(res0)
 !
-      S0=1.E20
+! if ltest=true, print the norm 
 !
-!....START INNER ITERATIONS
+  if(ltest) write(66,'(a,1pe10.3)') '                    res0 = ',res0
+
+! alculate coefficients of  l  and  u  matrices using sip
+  do k=3,nkmm
+    do i=3,nimm
+      do j=3,njmm 
+      ijk=lk(k)+li(i)+j
+      bb(ijk)=-ab(ijk)/(1.+alfa*(bn(ijk-nij)+be(ijk-nij)))
+      bw(ijk)=-aw(ijk)/(1.+alfa*(bn(ijk-nj)+bt(ijk-nj)))
+      bs(ijk)=-as(ijk)/(1.+alfa*(be(ijk-1)+bt(ijk-1)))
+      p1=alfa*(bb(ijk)*bn(ijk-nij)+bw(ijk)*bn(ijk-nj))
+      p2=alfa*(bb(ijk)*be(ijk-nij)+bs(ijk)*be(ijk-1))
+      p3=alfa*(bw(ijk)*bt(ijk-nj)+bs(ijk)*bt(ijk-1))
+      bp(ijk)=1./(ap(ijk)+p1+p2+p3 &
+        -bb(ijk)*bt(ijk-nij) &
+        -bw(ijk)*be(ijk-nj) &
+        -bs(ijk)*bn(ijk-1)+small)
+       bn(ijk)=(-an(ijk)-p1)*bp(ijk)
+       be(ijk)=(-ae(ijk)-p2)*bp(ijk)
+       bt(ijk)=(-at(ijk)-p3)*bp(ijk)
+      end do
+    end do
+  end do
 !
-      NS=NSW(IFI)
-      DO L=1,NS
+  s0=1.e20
 !
-!.....SOLVE FOR ZK(IJK) -- FORWARD ELIMINATION
+! Start inner iterations
 !
-      DO K=3,NKMM
-        DO I=3,NIMM
-          DO J=3,NJMM 
-            IJK=LK(K)+LI(I)+J
-            ZK(IJK)=(RES(IJK)-BB(IJK)*ZK(IJK-NIJ)-BW(IJK)*ZK(IJK-NJ)- &
-            BS(IJK)*ZK(IJK-1))*BP(IJK)
-          END DO
-        END DO
-      END DO
+  ns=nsw(ifi)
+  do l=1,ns
+!
+! solve for zk(ijk) -- forward elimination
+!
+  do k=3,nkmm
+    do i=3,nimm
+      do j=3,njmm 
+        ijk=lk(k)+li(i)+j
+        zk(ijk)=(res(ijk)-bb(ijk)*zk(ijk-nij)-bw(ijk)*zk(ijk-nj)- &
+        bs(ijk)*zk(ijk-1))*bp(ijk)
+      end do
+    end do
+  end do
 
 !
-!..... BACKWARD SUBSTITUTION; CALCULATE SCALAR PRODUCT SK
+!  backward substitution; calculate scalar product sk
 !
-      SK=0.0D0
-      DO K=NKMM,3,-1
-        DO I=NIMM,3,-1
-          DO J=NJMM,3,-1
-            IJK=LK(K)+LI(I)+J
-            ZK(IJK)=ZK(IJK)-BN(IJK)*ZK(IJK+1)-BE(IJK)*ZK(IJK+NJ)- &
-                    BT(IJK)*ZK(IJK+NIJ)
-            SK=SK+RES(IJK)*ZK(IJK)
-          END DO
-        END DO
-      END DO
-!
-!.....CALCULATE BETA
-!
-      BET=SK/S0
-!
-!.....CALCULATE NEW SEARCH VECTOR PK
-!
-      DO K=3,NKMM
-        DO I=3,NIMM
-          DO J=3,NJMM 
-            IJK=LK(K)+LI(I)+J
-            PK(IJK)=ZK(IJK)+BET*PK(IJK)
-          END DO
-        END DO
-      END DO
-!
-!.... CALCULATE SCALAR PRODUCT (PK.A PK) AND ALPHA (OVERWRITE ZK)
-!
-      PKAPK=0.0D0
-      DO K=3,NKMM
-        DO I=3,NIMM
-          DO J=3,NJMM 
-            IJK=LK(K)+LI(I)+J
-            ZK(IJK)=AP(IJK)*PK(IJK)-AE(IJK)*PK(IJK+NJ)-                &
-              AW(IJK)*PK(IJK-NJ)-AN(IJK)*PK(IJK+1)-AS(IJK)*PK(IJK-1)-  &
-              AT(IJK)*PK(IJK+NIJ)-AB(IJK)*PK(IJK-NIJ)
-            PKAPK=PKAPK+PK(IJK)*ZK(IJK)
-          END DO
-        END DO
-      END DO
+  sk=0.0d0
+  do k=nkmm,3,-1
+    do i=nimm,3,-1
+      do j=njmm,3,-1
+        ijk=lk(k)+li(i)+j
+        zk(ijk)=zk(ijk)-bn(ijk)*zk(ijk+1)-be(ijk)*zk(ijk+nj)- &
+                bt(ijk)*zk(ijk+nij)
+        sk=sk+res(ijk)*zk(ijk)
+      end do
+    end do
+  end do
 
-      ALF=SK/PKAPK
+  call global_sum(sk)
 !
-!.....CALCULATE VARIABLE CORRECTION, NEW RESIDUAL VECTOR, AND NORM
+! calculate beta
 !
-      RESL=0.0D0
-      DO K=3,NKMM
-        DO I=3,NIMM
-          DO J=3,NJMM 
-            IJK=LK(K)+LI(I)+J
-            FI(IJK)=FI(IJK)+ALF*PK(IJK)
-            RES(IJK)=RES(IJK)-ALF*ZK(IJK)
-            RESL=RESL+ABS(RES(IJK))
-          END DO
-        END DO
-      END DO
+  bet=sk/s0
+!
+! calculate new search vector pk
+!
+  do k=3,nkmm
+    do i=3,nimm
+      do j=3,njmm 
+        ijk=lk(k)+li(i)+j
+        pk(ijk)=zk(ijk)+bet*pk(ijk)
+      end do
+    end do
+  end do
+!
+!  calculate scalar product (pk.a pk) and alpha (overwrite zk)
+!
+  pkapk=0.0d0
+  do k=3,nkmm
+    do i=3,nimm
+      do j=3,njmm 
+        ijk=lk(k)+li(i)+j
+        zk(ijk)=ap(ijk)*pk(ijk)-ae(ijk)*pk(ijk+nj)-                &
+          aw(ijk)*pk(ijk-nj)-an(ijk)*pk(ijk+1)-as(ijk)*pk(ijk-1)-  &
+          at(ijk)*pk(ijk+nij)-ab(ijk)*pk(ijk-nij)
+        pkapk=pkapk+pk(ijk)*zk(ijk)
+      end do
+    end do
+  end do
 
-      S0=SK
-!
-!.....CHECK CONVERGENCE
-!
-      IF(L.EQ.1) RESOR(IFI)=RES0
-      RSM=RESL/(RESOR(IFI)+SMALL)
-      IF(LTEST) WRITE(66,'(19x,3a,I4,a,1PE10.3,a,1PE10.3)') ' FI=',CHVAR(IFI),' SWEEP = ',L,' RESL = ',RESL,' RSM = ',RSM
-      IF(RSM.LT.RESMAX) EXIT
-!
-!.....END OF ITERATION LOOP
-!
-      END DO
+  call global_sum(pkapk)
 
-!.....Write linear solver report:
-      write(66,'(3a,1PE10.3,a,1PE10.3,a,I0)') &
-      'PCG(SIP):  Solving for ',trim(chvarSolver(IFI)), &
-      ', Initial residual = ',RES0,', Final residual = ',RESL,', No Iterations ',L
+  alf=sk/pkapk
 !
-      RETURN
-      END
+! calculate variable correction, new residual vector, and norm
+!
+  resl=0.0d0
+  do k=3,nkmm
+    do i=3,nimm
+      do j=3,njmm 
+        ijk=lk(k)+li(i)+j
+
+        fi(ijk)=fi(ijk)+alf*pk(ijk)
+
+        res(ijk)=res(ijk)-alf*zk(ijk)
+
+        resl=resl+abs(res(ijk))
+
+      end do
+    end do
+  end do
+
+  call global_sum(resl)
+  call exchange(fi)
+  call exchange(res)
+
+  s0=sk
+!
+! Check convergence
+!
+  if(l.eq.1) resor(ifi)=res0
+  rsm=resl/(resor(ifi)+small)
+  if(ltest) write(66,'(19x,3a,i4,a,1pe10.3,a,1pe10.3)') ' fi=',chvar(ifi),' sweep = ',l,' resl = ',resl,' rsm = ',rsm
+  if(rsm.lt.resmax) exit
+!
+! End of iteration loop
+!
+  end do
+
+! Write linear solver report:
+  write(66,'(3a,1pe10.3,a,1pe10.3,a,i0)') &
+  'PCG(SIP):  Solving for ',trim(chvarsolver(ifi)), &
+  ', Initial residual = ',res0,', fFinal residual = ',resl,', No Iterations ',l
+!
+  return
+  end subroutine
