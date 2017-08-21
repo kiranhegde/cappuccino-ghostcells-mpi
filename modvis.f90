@@ -47,7 +47,7 @@
 !.....for standard k-epsilon model
 !====================================================
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
       inp=lk(k)+li(i)+j
@@ -69,7 +69,7 @@
 !.....for k-epsilon model + durbin time-scale limiter
 !====================================================
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
       inp=lk(k)+li(i)+j
@@ -94,7 +94,7 @@
 !.....for lam-bremhorst low re k-epsilon model
 !====================================================
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
       inp=lk(k)+li(i)+j
@@ -126,7 +126,7 @@
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       a0 = 4.0d0   ! original ref. a0 = 4.0; fluent puts a0=4.04!
 
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
 
@@ -204,7 +204,7 @@
 !====================================================
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
       inp=lk(k)+li(i)+j
@@ -245,7 +245,7 @@
 !.....for wilcox k-omega model
 !====================================================
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
       inp=lk(k)+li(i)+j
@@ -278,7 +278,7 @@
 !.....for earsm wj model 
 !====================================================
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
       inp=lk(k)+li(i)+j
@@ -311,7 +311,7 @@
 !.....for earsm wj model by menter et.al. (2009)
 !====================================================
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
       inp=lk(k)+li(i)+j
@@ -339,42 +339,6 @@
 
 !      magvis =  volumeweightedaverage(vis)
 !      write(66,*)'volume weighted average of effective visc.',magvis
-
-
-
-! !#############################################
-! !     [ obstacle modification: ]
-! !#############################################
-!       if(iobst.eq.0) return
-!       do nsa=1,nobst ! obstacles---
-!       ioss=ios(nsa)
-!       ioes=ioe(nsa)
-!       joss=jos(nsa)
-!       joes=joe(nsa)
-!       koss=kos(nsa)
-!       koes=koe(nsa)
-
-!       do k=koss,koes
-!       do i=ioss,ioes
-!       do j=joss,joes
-!       inp=lk(k)+li(i)+j
-!       vis(inp)=0.0d0
-!       viscos=0.0d0
-!       den(inp)=0.0d0
-!       uu(inp)=0.0d0
-!       vv(inp)=0.0d0
-!       ww(inp)=0.0d0
-!       uv(inp)=0.0d0
-!       uw(inp)=0.0d0
-!       vw(inp)=0.0d0
-!       utt(inp)=0.0d0
-!       vtt(inp)=0.0d0
-!       wtt(inp)=0.0d0
-!       end do ! j-loop
-!       end do ! i-loop
-!       end do ! k-loop
-
-!       end do  ! obstacles----
 
 
       return

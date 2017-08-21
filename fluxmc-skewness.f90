@@ -33,13 +33,12 @@
 !     LOCAL VARIABLES
 !
       INTEGER :: INE,INS,INB,INBS
-      INTEGER :: indx
       REAL(PREC) :: FXE,FXP
-      !REAL(PREC) :: DXS,DYS,DZS,DXT,DYT,DZT
       REAL(PREC) :: ARE,ARX,ARY,ARZ, &
                     XPN,YPN,ZPN
       REAL(PREC) :: RAPR
       REAL(PREC) :: VOLE
+      ! REAL(PREC) :: DXS,DYS,DZS,DXT,DYT,DZT
       ! REAL(PREC) :: n_x,n_y,n_z, &
       !               X_f,Y_f,Z_f, &
       !               DPpP_x,DPpP_y,DPpP_z, &
@@ -114,7 +113,6 @@
 
 ! !.....Underrelax Mass-flux correction
 !       !  fmcor = fmcor*0.6d0
-
 
 
       RETURN

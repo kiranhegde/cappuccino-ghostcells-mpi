@@ -50,7 +50,7 @@
 ! calculate initial residual vector and the norm
 !
   res0=0.0d0
-  do k=3,nkmm
+  do k=2,nkm
     do i=3,nimm
       do j=3,njmm 
         ijk=lk(k)+li(i)+j
@@ -70,7 +70,7 @@
 !
 ! calculate elements of diagonal preconditioning matrix
 !
-  do k=3,nkmm
+  do k=2,nkm
     do i=3,nimm
       do j=3,njmm 
         ijk=lk(k)+li(i)+j
@@ -89,7 +89,7 @@
 !
 ! solve for zk(ijk) -- forward substitution
 !
-  do k=3,nkmm
+  do k=2,nkm
     do i=3,nimm
       do j=3,njmm 
         ijk=lk(k)+li(i)+j
@@ -99,7 +99,7 @@
     end do
   end do
 
-  do k=3,nkmm
+  do k=2,nkm
     do i=3,nimm
       do j=3,njmm 
         ijk=lk(k)+li(i)+j
@@ -111,7 +111,7 @@
 !  backward substitution; calculate scalar product sk
 !
   sk=0.0d0
-  do k=nkmm,3,-1
+  do k=nkm,2,-1
     do i=nimm,3,-1
       do j=njmm,3,-1
         ijk=lk(k)+li(i)+j
@@ -130,7 +130,7 @@
 !
 ! calculate new search vector pk
 !
-  do k=3,nkmm
+  do k=2,nkm
     do i=3,nimm
       do j=3,njmm 
         ijk=lk(k)+li(i)+j
@@ -142,7 +142,7 @@
 !.... calculate scalar product (pk.a pk) and alpha (overwrite zk)
 !
   pkapk=0.0d0
-  do k=3,nkmm
+  do k=2,nkm
     do i=3,nimm
       do j=3,njmm 
         ijk=lk(k)+li(i)+j
@@ -162,7 +162,7 @@
 ! calculate variable correction, new residual vector, and norm
 !
   resl=0.0d0
-  do k=3,nkmm
+  do k=2,nkm
     do i=3,nimm
       do j=3,njmm 
         ijk=lk(k)+li(i)+j

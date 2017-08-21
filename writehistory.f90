@@ -1,36 +1,36 @@
 !***********************************************************************
 !
-       SUBROUTINE WRITEHISTORY
+   subroutine writehistory
 !
 !***********************************************************************
 !
-      USE TYPES
-      USE PARAMETERS
-      USE INDEXES
-      USE GEOMETRY
-      USE VARIABLES
-      USE TITLE_MOD
-      USE TIME_MOD
-      USE OMEGA_Turb_Models
+  use types
+  use parameters
+  use indexes
+  use geometry
+  use variables
+  use title_mod
+  use time_mod
+  use omega_turb_models
 
-      IMPLICIT NONE
+  implicit none
 !
 !***********************************************************************
 !
-     INTEGER :: I, J, K, IJK
+ integer :: i, j, k, ijk
 
 !---------------------------------------------------------
-!       RESULTS AT EACH TIME-STEP FOR TRANSIENT SIMUL.
+!  Results at each time-step for transient simulation
 !---------------------------------------------------------
 
-      IF(LTRANSIENT) THEN
-      DO IMON=1,MPOINTS
-        READ(89,*) I,J,K
-        IJK=LK(K)+LI(I)+J
-        WRITE(91+IMON,'(2X,1P7E14.5,2X)') TIME,U(IJK),V(IJK),W(IJK),TE(IJK),ED(IJK)
-      END DO
-      REWIND 89
-      END IF
+  if(ltransient) then
+    do imon=1,mpoints
+      read(89,*) i,j,k
+      ijk=lk(k)+li(i)+j
+      write(91+imon,'(2x,1p7e14.5,2x)') time,u(ijk),v(ijk),w(ijk),te(ijk),ed(ijk)
+    end do
+    rewind 89
+  end if
 
-      RETURN
-      END
+  return
+  end

@@ -122,9 +122,11 @@ program cappuccino_ghostcells_mpi
 !     T i m e   l o o p : 
 !===============================================
 
-  write(6,'(a)') ' '
-  write(6,'(a)') '  Start iteration!'
-  write(6,'(a)') ' '
+  if (myid .eq. 0) then
+    write(66,'(a)') ' '
+    write(66,'(a)') '  Start iteration!'
+    write(66,'(a)') ' '
+  endif
 
   itimes=itime+1 
   itimee=itime+numstep
@@ -175,7 +177,7 @@ program cappuccino_ghostcells_mpi
 !
     iteration_loop: do iter=1,maxit
 
-      if (myid == 0 ) then
+      if (myid .eq. 0 ) then
         call cpu_time(start)
       endif
 
@@ -204,7 +206,7 @@ program cappuccino_ghostcells_mpi
 
       call synchronize_processes 
 
-      if (myid == 0) then
+      if (myid .eq. 0) then
         call cpu_time(finish)
         write(66,'(a,g0.3,a)') 'ExecutionTime = ',finish-start,' s'
         write(66,*)
@@ -223,7 +225,7 @@ program cappuccino_ghostcells_mpi
       call global_max( source )
 
       if(source.gt.slarge) then
-        if ( myid == 0 ) write(66,"(//,10x,a)") "*** Program terminated -  iterations diverge ***" 
+        if ( myid .eq. 0 ) write(66,"(//,10x,a)") "*** Program terminated -  iterations diverge ***" 
         call abort_mission
       endif
 

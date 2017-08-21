@@ -1,78 +1,78 @@
 !***********************************************************************
 !
-      SUBROUTINE CALC_STATISTICS
+      subroutine calc_statistics
 !
 !***********************************************************************
 !
-      USE TYPES
-      USE PARAMETERS
-      USE INDEXES
-      USE GEOMETRY
-      USE VARIABLES
-      USE TIME_MOD
-      USE STATISTICS
+      use types
+      use parameters
+      use indexes
+      use geometry
+      use variables
+      use time_mod
+      use statistics
 
-      IMPLICIT NONE
+      implicit none
 !
 !***********************************************************************
 !
-      INTEGER :: I, J, K, INP
-      REAL(PREC) :: U_NSAMPLE,V_NSAMPLE,W_NSAMPLE!,TE_NSAMPLE !,CON_NSAMPLE
+      integer :: i, j, k, inp
+      real(prec) :: u_nsample,v_nsample,w_nsample!,te_nsample !,con_nsample
 
 
-      N_SAMPLE=N_SAMPLE+1
+      n_sample=n_sample+1
       
-      ! LOOP ALL THE CELLS INCLUDING GHOST CELLS
-      DO K=2,NKM
-      DO I=2,NIM
-      DO J=2,NJM
+      ! loop all the cells including ghost cells
+      do k=2,nkm
+      do i=2,nim
+      do j=2,njm
 
-      INP=LK(K)+LI(I)+J
+      inp=lk(k)+li(i)+j
 
 !.....Velocity field
-      U_AVER(INP)=U_AVER(INP)+U(INP) 
-      V_AVER(INP)=V_AVER(INP)+V(INP) 
-      W_AVER(INP)=W_AVER(INP)+W(INP) 
+      u_aver(inp)=u_aver(inp)+u(inp) 
+      v_aver(inp)=v_aver(inp)+v(inp) 
+      w_aver(inp)=w_aver(inp)+w(inp) 
 
-!      CON_AVER(INP)=CON_AVER(INP)+CON(INP)
+!      con_aver(inp)=con_aver(inp)+con(inp)
 
-!.....Ensemble average over N samples
-      U_NSAMPLE=U_AVER(INP)/N_SAMPLE
-      V_NSAMPLE=V_AVER(INP)/N_SAMPLE
-      W_NSAMPLE=W_AVER(INP)/N_SAMPLE
-!      CON_NSAMPLE=CON_AVER(INP)/N_SAMPLE
+!.....Ensemble average over n samples
+      u_nsample=u_aver(inp)/n_sample
+      v_nsample=v_aver(inp)/n_sample
+      w_nsample=w_aver(inp)/n_sample
+!      con_nsample=con_aver(inp)/n_sample
 
 !.....Reynolds stress components
-      UU_AVER(INP)=UU_AVER(INP)+(U(INP)-U_NSAMPLE)**2
-      VV_AVER(INP)=VV_AVER(INP)+(V(INP)-V_NSAMPLE)**2
-      WW_AVER(INP)=WW_AVER(INP)+(W(INP)-W_NSAMPLE)**2
+      uu_aver(inp)=uu_aver(inp)+(u(inp)-u_nsample)**2
+      vv_aver(inp)=vv_aver(inp)+(v(inp)-v_nsample)**2
+      ww_aver(inp)=ww_aver(inp)+(w(inp)-w_nsample)**2
 
-      UV_AVER(INP)=UV_AVER(INP)+ &
-                   ((U(INP)-U_NSAMPLE)*(V(INP)-V_NSAMPLE))
-      UW_AVER(INP)=UW_AVER(INP)+ &
-                   ((U(INP)-U_NSAMPLE)*(W(INP)-W_NSAMPLE))
-      VW_AVER(INP)=VW_AVER(INP)+ &
-                   ((V(INP)-V_NSAMPLE)*(W(INP)-W_NSAMPLE))
+      uv_aver(inp)=uv_aver(inp)+ &
+                   ((u(inp)-u_nsample)*(v(inp)-v_nsample))
+      uw_aver(inp)=uw_aver(inp)+ &
+                   ((u(inp)-u_nsample)*(w(inp)-w_nsample))
+      vw_aver(inp)=vw_aver(inp)+ &
+                   ((v(inp)-v_nsample)*(w(inp)-w_nsample))
 
 !.....Turbulence kinetic energy
-      TE_AVER(INP)=(UU_AVER(INP)+VV_AVER(INP)+WW_AVER(INP)) &
-                        /(2*N_SAMPLE)
+      te_aver(inp)=(uu_aver(inp)+vv_aver(inp)+ww_aver(inp)) &
+                        /(2*n_sample)
 
 !.....Concentration
-!      CONCON_AVER(INP)=CONCON_AVER(INP)+ &
-!                   (CON(INP)-CON_NSAMPLE)**2 
+!      concon_aver(inp)=concon_aver(inp)+ &
+!                   (con(inp)-con_nsample)**2 
 
-!.....Concentration flux     
-!      UCON_AVER(INP)=UCON_AVER(INP)+ &
-!                   ((U(INP)-U_NSAMPLE)*(CON(INP)-CON_NSAMPLE))
-!      VCON_AVER(INP)=VCON_AVER(INP)+ &
-!                   ((V(INP)-V_NSAMPLE)*(CON(INP)-CON_NSAMPLE))
-!      WCON_AVER(INP)=WCON_AVER(INP)+ &
-!                   ((W(INP)-W_NSAMPLE)*(CON(INP)-CON_NSAMPLE))
+!.....concentration flux     
+!      ucon_aver(inp)=ucon_aver(inp)+ &
+!                   ((u(inp)-u_nsample)*(con(inp)-con_nsample))
+!      vcon_aver(inp)=vcon_aver(inp)+ &
+!                   ((v(inp)-v_nsample)*(con(inp)-con_nsample))
+!      wcon_aver(inp)=wcon_aver(inp)+ &
+!                   ((w(inp)-w_nsample)*(con(inp)-con_nsample))
 
-      END DO    
-      END DO    
-      END DO    
+      end do    
+      end do    
+      end do    
  
-      RETURN
-      END
+      return
+      end

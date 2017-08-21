@@ -54,7 +54,7 @@
 !
 !.....Calculate east cell face
 !
-      do k=2,nkmm
+      do k=2,nkm
       do i=2,nimm
       do j=2,njmm
 

@@ -29,7 +29,7 @@
   
     sumvol = 0.0_dp
     wAvgU = 0.0_dp  
-    do k=3,nkmm
+    do k=2,nkm
     do i=3,nimm
     do j=3,njmm
     inp = lk(k)+li(i)+j
@@ -73,7 +73,7 @@
 
       level = dble(percent)
 
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
 
@@ -523,7 +523,7 @@
      real(dp) :: d2vdx2,d2vdy2,d2vdz2
      real(dp) :: d2wdx2,d2wdy2,d2wdz2
      
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
 

@@ -299,7 +299,7 @@ subroutine read_input
 
 if (myid .eq. 0) then
   write(66,*)' '
-  write(66,*)'  ->input data O.K.'
+  write(66,*)'  Finished reading and broadcasting input data.'
   write(66,*)' '
 endif
 

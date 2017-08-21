@@ -53,7 +53,7 @@ subroutine calcuvw
   endif
 
 ! calculate source terms integrated over volume
-  do k=3,nkmm
+  do k=2,nkm
   do i=3,nimm
   do j=3,njmm
 
@@ -153,188 +153,188 @@ subroutine calcuvw
   ! Wall boundaries
   !----------------------------------------------------------------------------
 
-  ! !
-  ! ! ovde moze da se imaju parovi ijp,ijgc za sve granice sacuvati, za svaku granicu zasepno i onda se ici po njima loop
-  ! !
+  !
+  ! ovde moze da se imaju parovi ijp,ijgc za sve granice sacuvati, za svaku granicu zasepno i onda se ici po njima loop
+  !
 
-  ! ! Bottom
-  ! do i=3,nimm
-  ! do j=3,njmm
+  ! Bottom
+  do i=3,nimm
+  do j=3,njmm
 
-  ! inbc=lk(3)+li(i)+j 
-  ! ingc = inbc - nij
+  inbc=lk(3)+li(i)+j 
+  ingc = inbc - nij
 
-  ! iface  = ingc
+  iface  = ingc
 
-  ! fxp = fz(ingc)
-  ! fxe = 1.0_dp-fxp
+  fxp = fz(ingc)
+  fxe = 1.0_dp-fxp
 
-  ! ! At what height is the wall
-  ! ground_zero_x = xc(inbc)*fxp+xc(ingc)*fxe
-  ! ground_zero_y = yc(inbc)*fxp+yc(ingc)*fxe
-  ! ground_zero_z = zc(inbc)*fxp+zc(ingc)*fxe
+  ! At what height is the wall
+  ground_zero_x = xc(inbc)*fxp+xc(ingc)*fxe
+  ground_zero_y = yc(inbc)*fxp+yc(ingc)*fxe
+  ground_zero_z = zc(inbc)*fxp+zc(ingc)*fxe
 
-  ! are = sqrt(ar3x(iface)**2+ar3y(iface)**2+ar3z(iface)**2)
-  ! ! write(*,*) 'Afce ares components: ',ar3x(iface),ar3y(iface),ar3z(iface)
+  are = sqrt(ar3x(iface)**2+ar3y(iface)**2+ar3z(iface)**2)
+  ! write(*,*) 'Afce ares components: ',ar3x(iface),ar3y(iface),ar3z(iface)
 
-  ! ! Face normals
-  ! nxf = ar3x(iface)/are
-  ! nyf = ar3y(iface)/are
-  ! nzf = ar3z(iface)/are
-  ! ! write(*,*) 'Normals: ', nxf,nyf,nzf
+  ! Face normals
+  nxf = ar3x(iface)/are
+  nyf = ar3y(iface)/are
+  nzf = ar3z(iface)/are
+  ! write(*,*) 'Normals: ', nxf,nyf,nzf
 
-  ! ! Normal distance from wall of the cell center of wall adjecent cell
-  ! dnw = abs( (xc(inbc)-ground_zero_x)*nx + (yc(inbc)-ground_zero_y)*ny + (zc(inbc)-ground_zero_z)*nz )
+  ! Normal distance from wall of the cell center of wall adjecent cell
+  dnw = abs( (xc(inbc)-ground_zero_x)*nx + (yc(inbc)-ground_zero_y)*ny + (zc(inbc)-ground_zero_z)*nz )
 
-  ! viss = vis(ingc) ! Viscosity foor wall  calculated in calc_vis_les
-  ! cf=viss*are/dnw ! cf v.s. vsol -> cf is calculated using normal distance!
+  viss = vis(ingc) ! Viscosity foor wall  calculated in calc_vis_les
+  cf=viss*are/dnw ! cf v.s. vsol -> cf is calculated using normal distance!
 
-  ! ! Dist from cc of owner cell to cf at wall boundary, cannot expect dpb to be normal to boundary face in general
-  ! dpb = 0.5_dp * sqrt( (xc(inbc)-xc(ingc))**2 + (yc(inbc)-yc(ingc))**2 + (zc(inbc)-zc(ingc))**2 )
+  ! Dist from cc of owner cell to cf at wall boundary, cannot expect dpb to be normal to boundary face in general
+  dpb = 0.5_dp * sqrt( (xc(inbc)-xc(ingc))**2 + (yc(inbc)-yc(ingc))**2 + (zc(inbc)-zc(ingc))**2 )
 
-  ! ! Diffusion coef. 
-  ! vsol = viss*are/dpb
+  ! Diffusion coef. 
+  vsol = viss*are/dpb
 
-  ! ! Velocity difference vector components
-  ! upb = u(inbc)!-u(ijb) ! Change for moving wall u(ijb) \= 0
-  ! vpb = v(inbc)!-v(ijb)
-  ! wpb = w(inbc)!-w(ijb)
+  ! Velocity difference vector components
+  upb = u(inbc)!-u(ijb) ! Change for moving wall u(ijb) \= 0
+  vpb = v(inbc)!-v(ijb)
+  wpb = w(inbc)!-w(ijb)
 
-  ! ! Velocity difference vector projected to wall face normal.
-  ! vnp = upb*nxf+vpb*nyf+wpb*nzf
+  ! Velocity difference vector projected to wall face normal.
+  vnp = upb*nxf+vpb*nyf+wpb*nzf
 
-  ! ! Velocity difference in tangential direction.
-  ! utp = upb-vnp*nxf
-  ! vtp = vpb-vnp*nyf
-  ! wtp = wpb-vnp*nzf
-
-
-  ! if (ScndOrderWallBC_Model) then
-
-  !   ! Eksplicitna difuzija
-  !   FdUi=viss*((gradu(1,ijp)+gradu(1,ijp))*nxf+(gradu(2,ijp)+gradv(1,ijp))*nyf+(gradu(3,ijp)+gradw(1,ijp))*nzf)
-  !   FdVi=viss*((gradv(1,ijp)+gradu(2,ijp))*nxf+(gradv(2,ijp)+gradv(2,ijp))*nyf+(gradv(3,ijp)+gradw(2,ijp))*nzf)
-  !   FdWi=viss*((gradw(1,ijp)+gradu(3,ijp))*nxf+(gradw(2,ijp)+gradv(3,ijp))*nyf+(gradw(3,ijp)+gradw(3,ijp))*nzf)
-  !   ! Projektujes eksplicitnu difuziju na nomalu
-  !   FdNe = FdUi*nxf + FdVi*nyf + FdWi*nzf
-  !   ! oduzmes od eksplicitne difuzije onu komponentu duz normale
-  !   FdUi = FdUi-FdNe*nxf
-  !   FdVi = FdVi-FdNe*nyf
-  !   FdWi = FdWi-FdNe*nzf
-
-  !   ap(inbc)  = ap(inbc) + vsol
-  !   spv(inbc) = spv(inbc) + vsol
-  !   sp(inbc)  = sp(inbc)  + vsol
-
-  !   su(inbc) = su(inbc)+Vsol*U(inbc)-(2*cf*Utp+FdUi*Are)
-  !   sv(inbc) = sv(inbc)+Vsol*V(inbc)-(2*cf*Vtp+FdVi*Are)
-  !   sw(inbc) = sw(inbc)+Vsol*W(inbc)-(2*cf*Wtp+FdWi*Are)
-
-  ! else
-
-  !   ap(inbc)  = ap(inbc) + vsol
-  !   spv(inbc) = spv(inbc) + vsol
-  !   sp(inbc)  = sp(inbc)  + vsol
-
-  !   su(inbc) = su(inbc) + vsol*u(inbc) - cf*utp
-  !   sv(inbc) = sv(inbc) + vsol*v(inbc) - cf*vtp
-  !   sw(inbc) = sw(inbc) + vsol*w(inbc) - cf*wtp
-
-  ! endif
+  ! Velocity difference in tangential direction.
+  utp = upb-vnp*nxf
+  vtp = vpb-vnp*nyf
+  wtp = wpb-vnp*nzf
 
 
-  ! enddo
-  ! enddo
+  if (ScndOrderWallBC_Model) then
+
+    ! Eksplicitna difuzija
+    FdUi=viss*((gradu(1,ijp)+gradu(1,ijp))*nxf+(gradu(2,ijp)+gradv(1,ijp))*nyf+(gradu(3,ijp)+gradw(1,ijp))*nzf)
+    FdVi=viss*((gradv(1,ijp)+gradu(2,ijp))*nxf+(gradv(2,ijp)+gradv(2,ijp))*nyf+(gradv(3,ijp)+gradw(2,ijp))*nzf)
+    FdWi=viss*((gradw(1,ijp)+gradu(3,ijp))*nxf+(gradw(2,ijp)+gradv(3,ijp))*nyf+(gradw(3,ijp)+gradw(3,ijp))*nzf)
+    ! Projektujes eksplicitnu difuziju na nomalu
+    FdNe = FdUi*nxf + FdVi*nyf + FdWi*nzf
+    ! oduzmes od eksplicitne difuzije onu komponentu duz normale
+    FdUi = FdUi-FdNe*nxf
+    FdVi = FdVi-FdNe*nyf
+    FdWi = FdWi-FdNe*nzf
+
+    ap(inbc)  = ap(inbc) + vsol
+    spv(inbc) = spv(inbc) + vsol
+    sp(inbc)  = sp(inbc)  + vsol
+
+    su(inbc) = su(inbc)+Vsol*U(inbc)-(2*cf*Utp+FdUi*Are)
+    sv(inbc) = sv(inbc)+Vsol*V(inbc)-(2*cf*Vtp+FdVi*Are)
+    sw(inbc) = sw(inbc)+Vsol*W(inbc)-(2*cf*Wtp+FdWi*Are)
+
+  else
+
+    ap(inbc)  = ap(inbc) + vsol
+    spv(inbc) = spv(inbc) + vsol
+    sp(inbc)  = sp(inbc)  + vsol
+
+    su(inbc) = su(inbc) + vsol*u(inbc) - cf*utp
+    sv(inbc) = sv(inbc) + vsol*v(inbc) - cf*vtp
+    sw(inbc) = sw(inbc) + vsol*w(inbc) - cf*wtp
+
+  endif
 
 
-  ! ! Top
-  ! do i=3,nimm
-  ! do j=3,njmm
-
-  ! inbc=lk(nimm)+li(i)+j 
-  ! ingc = inbc + nij
-
-  ! iface  = inbc
-
-  ! fxp = 1.0_dp-fz(inbc)
-  ! fxe = 1.0_dp-fxp
-
-  ! ! At what height is the wall
-  ! ground_zero_x = xc(inbc)*fxp+xc(ingc)*fxe
-  ! ground_zero_y = yc(inbc)*fxp+yc(ingc)*fxe
-  ! ground_zero_z = zc(inbc)*fxp+zc(ingc)*fxe
-
-  ! are = sqrt(ar3x(iface)**2+ar3y(iface)**2+ar3z(iface)**2)
-  ! ! write(*,*) 'Afce ares components: ',ar3x(iface),ar3y(iface),ar3z(iface)
-
-  ! ! Face normals
-  ! nxf = ar3x(iface)/are
-  ! nyf = ar3y(iface)/are
-  ! nzf = ar3z(iface)/are
-  ! ! write(*,*) 'Normals: ', nxf,nyf,nzf
-
-  ! ! Normal distance from wall of the cell center of wall adjecent cell
-  ! dnw = abs( (xc(inbc)-ground_zero_x)*nx + (yc(inbc)-ground_zero_y)*ny + (zc(inbc)-ground_zero_z)*nz )
-
-  ! viss = vis(ingc) ! Viscosity foor wall  calculated in calc_vis_les
-  ! cf=viss*are/dnw ! cf v.s. vsol -> cf is calculated using normal distance!
-
-  ! ! Dist from cc of owner cell to cf at wall boundary, cannot expect dpb to be normal to boundary face in general
-  ! dpb = 0.5_dp * sqrt( (xc(inbc)-xc(ingc))**2 + (yc(inbc)-yc(ingc))**2 + (zc(inbc)-zc(ingc))**2 )
-
-  ! ! Diffusion coef. 
-  ! vsol = viss*are/dpb
-
-  ! ! Velocity difference vector components
-  ! upb = u(inbc)!-u(ijb)  ! Change for moving wall u(ijb) \= 0
-  ! vpb = v(inbc)!-v(ijb)
-  ! wpb = w(inbc)!-w(ijb)
-
-  ! ! Velocity difference vector projected to wall face normal.
-  ! vnp = upb*nxf+vpb*nyf+wpb*nzf
-
-  ! ! Velocity difference in tangential direction.
-  ! utp = upb-vnp*nxf
-  ! vtp = vpb-vnp*nyf
-  ! wtp = wpb-vnp*nzf
+  enddo
+  enddo
 
 
-  ! if (ScndOrderWallBC_Model) then
+  ! Top
+  do i=3,nimm
+  do j=3,njmm
 
-  !   ! Eksplicitna difuzija
-  !   FdUi=viss*((gradu(1,ijp)+gradu(1,ijp))*nxf+(gradu(2,ijp)+gradv(1,ijp))*nyf+(gradu(3,ijp)+gradw(1,ijp))*nzf)
-  !   FdVi=viss*((gradv(1,ijp)+gradu(2,ijp))*nxf+(gradv(2,ijp)+gradv(2,ijp))*nyf+(gradv(3,ijp)+gradw(2,ijp))*nzf)
-  !   FdWi=viss*((gradw(1,ijp)+gradu(3,ijp))*nxf+(gradw(2,ijp)+gradv(3,ijp))*nyf+(gradw(3,ijp)+gradw(3,ijp))*nzf)
-  !   ! Projektujes eksplicitnu difuziju na nomalu
-  !   FdNe = FdUi*nxf + FdVi*nyf + FdWi*nzf
-  !   ! oduzmes od eksplicitne difuzije onu komponentu duz normale
-  !   FdUi = FdUi-FdNe*nxf
-  !   FdVi = FdVi-FdNe*nyf
-  !   FdWi = FdWi-FdNe*nzf
+  inbc=lk(nimm)+li(i)+j 
+  ingc = inbc + nij
 
-  !   ap(inbc)  = ap(inbc) + vsol
-  !   spv(inbc) = spv(inbc) + vsol
-  !   sp(inbc)  = sp(inbc)  + vsol
+  iface  = inbc
 
-  !   su(inbc) = su(inbc)+Vsol*U(inbc)-(2*cf*Utp+FdUi*Are)
-  !   sv(inbc) = sv(inbc)+Vsol*V(inbc)-(2*cf*Vtp+FdVi*Are)
-  !   sw(inbc) = sw(inbc)+Vsol*W(inbc)-(2*cf*Wtp+FdWi*Are)
+  fxp = 1.0_dp-fz(inbc)
+  fxe = 1.0_dp-fxp
 
-  ! else
+  ! At what height is the wall
+  ground_zero_x = xc(inbc)*fxp+xc(ingc)*fxe
+  ground_zero_y = yc(inbc)*fxp+yc(ingc)*fxe
+  ground_zero_z = zc(inbc)*fxp+zc(ingc)*fxe
 
-  !   ap(inbc)  = ap(inbc) + vsol
-  !   spv(inbc) = spv(inbc) + vsol
-  !   sp(inbc)  = sp(inbc)  + vsol
+  are = sqrt(ar3x(iface)**2+ar3y(iface)**2+ar3z(iface)**2)
+  ! write(*,*) 'Afce ares components: ',ar3x(iface),ar3y(iface),ar3z(iface)
 
-  !   su(inbc) = su(inbc) + vsol*u(inbc) - cf*utp
-  !   sv(inbc) = sv(inbc) + vsol*v(inbc) - cf*vtp
-  !   sw(inbc) = sw(inbc) + vsol*w(inbc) - cf*wtp
+  ! Face normals
+  nxf = ar3x(iface)/are
+  nyf = ar3y(iface)/are
+  nzf = ar3z(iface)/are
+  ! write(*,*) 'Normals: ', nxf,nyf,nzf
 
-  ! endif
+  ! Normal distance from wall of the cell center of wall adjecent cell
+  dnw = abs( (xc(inbc)-ground_zero_x)*nx + (yc(inbc)-ground_zero_y)*ny + (zc(inbc)-ground_zero_z)*nz )
+
+  viss = vis(ingc) ! Viscosity foor wall  calculated in calc_vis_les
+  cf=viss*are/dnw ! cf v.s. vsol -> cf is calculated using normal distance!
+
+  ! Dist from cc of owner cell to cf at wall boundary, cannot expect dpb to be normal to boundary face in general
+  dpb = 0.5_dp * sqrt( (xc(inbc)-xc(ingc))**2 + (yc(inbc)-yc(ingc))**2 + (zc(inbc)-zc(ingc))**2 )
+
+  ! Diffusion coef. 
+  vsol = viss*are/dpb
+
+  ! Velocity difference vector components
+  upb = u(inbc)!-u(ijb)  ! Change for moving wall u(ijb) \= 0
+  vpb = v(inbc)!-v(ijb)
+  wpb = w(inbc)!-w(ijb)
+
+  ! Velocity difference vector projected to wall face normal.
+  vnp = upb*nxf+vpb*nyf+wpb*nzf
+
+  ! Velocity difference in tangential direction.
+  utp = upb-vnp*nxf
+  vtp = vpb-vnp*nyf
+  wtp = wpb-vnp*nzf
 
 
-  ! enddo
-  ! enddo
+  if (ScndOrderWallBC_Model) then
+
+    ! Eksplicitna difuzija
+    FdUi=viss*((gradu(1,ijp)+gradu(1,ijp))*nxf+(gradu(2,ijp)+gradv(1,ijp))*nyf+(gradu(3,ijp)+gradw(1,ijp))*nzf)
+    FdVi=viss*((gradv(1,ijp)+gradu(2,ijp))*nxf+(gradv(2,ijp)+gradv(2,ijp))*nyf+(gradv(3,ijp)+gradw(2,ijp))*nzf)
+    FdWi=viss*((gradw(1,ijp)+gradu(3,ijp))*nxf+(gradw(2,ijp)+gradv(3,ijp))*nyf+(gradw(3,ijp)+gradw(3,ijp))*nzf)
+    ! Projektujes eksplicitnu difuziju na nomalu
+    FdNe = FdUi*nxf + FdVi*nyf + FdWi*nzf
+    ! oduzmes od eksplicitne difuzije onu komponentu duz normale
+    FdUi = FdUi-FdNe*nxf
+    FdVi = FdVi-FdNe*nyf
+    FdWi = FdWi-FdNe*nzf
+
+    ap(inbc)  = ap(inbc) + vsol
+    spv(inbc) = spv(inbc) + vsol
+    sp(inbc)  = sp(inbc)  + vsol
+
+    su(inbc) = su(inbc)+Vsol*U(inbc)-(2*cf*Utp+FdUi*Are)
+    sv(inbc) = sv(inbc)+Vsol*V(inbc)-(2*cf*Vtp+FdVi*Are)
+    sw(inbc) = sw(inbc)+Vsol*W(inbc)-(2*cf*Wtp+FdWi*Are)
+
+  else
+
+    ap(inbc)  = ap(inbc) + vsol
+    spv(inbc) = spv(inbc) + vsol
+    sp(inbc)  = sp(inbc)  + vsol
+
+    su(inbc) = su(inbc) + vsol*u(inbc) - cf*utp
+    sv(inbc) = sv(inbc) + vsol*v(inbc) - cf*vtp
+    sw(inbc) = sw(inbc) + vsol*w(inbc) - cf*wtp
+
+  endif
+
+
+  enddo
+  enddo
 
 
 
@@ -355,7 +355,7 @@ subroutine calcuvw
   urfrs=urfr(iu)
   urfms=urfm(iu)
 
-  do k=3,nkmm
+  do k=2,nkm
   do i=3,nimm
   do j=3,njmm
 
@@ -391,7 +391,7 @@ subroutine calcuvw
   urfrs=urfr(iv)
   urfms=urfm(iv)
 
-  do k=3,nkmm
+  do k=2,nkm
   do i=3,nimm
   do j=3,njmm
 
@@ -428,7 +428,7 @@ subroutine calcuvw
   urfrs=urfr(iw)
   urfms=urfm(iw)
 
-  do k=3,nkmm
+  do k=2,nkm
   do i=3,nimm
   do j=3,njmm
 

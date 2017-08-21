@@ -29,7 +29,7 @@
         call grad_gauss(w,gradw(1,:),gradw(2,:),gradw(3,:))
       endif
 
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
 

@@ -60,7 +60,7 @@
       globalContErr = 0.0d0
       sumLocalContErr = 0.0d0
 
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
 
