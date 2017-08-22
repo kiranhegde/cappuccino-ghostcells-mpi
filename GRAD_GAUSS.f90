@@ -39,7 +39,7 @@
       dudz = 0.0d0
 
       ! Inner faces loop
-      do k=2,nkmm
+      do k=2,nkm
       do i=2,nimm
       do j=2,njmm
 
@@ -85,7 +85,7 @@
       end do 
 
       ! Inner cells loop
-      do k=3,nkmm
+      do k=2,nkm
       do i=3,nimm
       do j=3,njmm
 

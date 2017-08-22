@@ -27,45 +27,45 @@
 !
 
 !     Geometry
-  allocate(x(nxyza),stat=ierr) 
+  allocate(x(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: x" 
-  allocate(y(nxyza),stat=ierr) 
+  allocate(y(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: y" 
-  allocate(z(nxyza),stat=ierr) 
+  allocate(z(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: z" 
-  allocate(fx(nxyza),stat=ierr) 
+  allocate(fx(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: fx" 
-  allocate(fy(nxyza),stat=ierr) 
+  allocate(fy(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: fy" 
-  allocate(fz(nxyza),stat=ierr) 
+  allocate(fz(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: fz" 
-  allocate(xc(nxyza),stat=ierr) 
+  allocate(xc(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: xc" 
-  allocate(yc(nxyza),stat=ierr) 
+  allocate(yc(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: yc" 
-  allocate(zc(nxyza),stat=ierr) 
+  allocate(zc(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: zc" 
-  allocate(vol(nxyza),stat=ierr) 
+  allocate(vol(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: vol"
-  allocate(ar1x(nxyza),stat=ierr) 
+  allocate(ar1x(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar1x" 
-  allocate(ar1y(nxyza),stat=ierr) 
+  allocate(ar1y(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar1y" 
-  allocate(ar1z(nxyza),stat=ierr) 
+  allocate(ar1z(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar1z" 
-  allocate(ar2x(nxyza),stat=ierr) 
+  allocate(ar2x(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar2x" 
-  allocate(ar2y(nxyza),stat=ierr) 
+  allocate(ar2y(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar2y" 
-  allocate(ar2z(nxyza),stat=ierr) 
+  allocate(ar2z(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar2z" 
-  allocate(ar3x(nxyza),stat=ierr) 
+  allocate(ar3x(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar3x" 
-  allocate(ar3y(nxyza),stat=ierr) 
+  allocate(ar3y(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar3y" 
-  allocate(ar3z(nxyza),stat=ierr) 
+  allocate(ar3z(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ar3z" 
-  allocate(wallDistance(nxyza),stat=ierr) 
+  allocate(wallDistance(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: wallDistance" 
 
 
@@ -75,157 +75,157 @@
       if(ierr /= 0)write(*,*)"allocation error: lk"
 
 !     Coefficients
-  allocate(ae(nxyza),stat=ierr) 
+  allocate(ae(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ae" 
-  allocate(aw(nxyza),stat=ierr) 
+  allocate(aw(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: aw" 
-  allocate(an(nxyza),stat=ierr) 
+  allocate(an(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: an" 
-  allocate(as(nxyza),stat=ierr) 
+  allocate(as(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: as" 
-  allocate(at(nxyza),stat=ierr) 
+  allocate(at(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: at" 
-  allocate(ab(nxyza),stat=ierr) 
+  allocate(ab(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ab" 
-  allocate(ap(nxyza),stat=ierr) 
+  allocate(ap(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ap" 
 
-  allocate(su(nxyza),stat=ierr) 
+  allocate(su(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: su" 
-  allocate(sv(nxyza),stat=ierr) 
+  allocate(sv(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: sv" 
-  allocate(sw(nxyza),stat=ierr) 
+  allocate(sw(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: sw" 
 
-  allocate(sp(nxyza),stat=ierr) 
+  allocate(sp(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: sp" 
-  allocate(res(nxyza),stat=ierr) 
+  allocate(res(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: res" 
-  allocate(spv(nxyza),stat=ierr) 
+  allocate(spv(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: spv" 
 
-  allocate(apu(nxyza),stat=ierr) 
+  allocate(apu(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: apu" 
-  allocate(apv(nxyza),stat=ierr) 
+  allocate(apv(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: apv"
-  allocate(apw(nxyza),stat=ierr) 
+  allocate(apw(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: apw"
 
 !     Variables
   ! Velocities 
-  allocate(u(nxyza),stat=ierr) 
+  allocate(u(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: u" 
-  allocate(v(nxyza),stat=ierr) 
+  allocate(v(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: v" 
-  allocate(w(nxyza),stat=ierr) 
+  allocate(w(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: w" 
   ! Mass flows
-  allocate(f1(nxyza),stat=ierr) 
+  allocate(f1(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: f1" 
-  allocate(f2(nxyza),stat=ierr) 
+  allocate(f2(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: f2" 
-  allocate(f3(nxyza),stat=ierr) 
+  allocate(f3(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: f3" 
 
-  allocate(p(nxyza),stat=ierr) 
+  allocate(p(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: p" 
-  allocate(pp(nxyza),stat=ierr) 
+  allocate(pp(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: pp" 
-  allocate(te(nxyza),stat=ierr) 
+  allocate(te(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: te" 
-  allocate(ed(nxyza),stat=ierr) 
+  allocate(ed(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ed" 
-  allocate(t(nxyza),stat=ierr) 
+  allocate(t(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: t" 
-  allocate(vis(nxyza),stat=ierr) 
+  allocate(vis(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: vis" 
-  allocate(den(nxyza),stat=ierr) 
+  allocate(den(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: den" 
-  allocate(gen(nxyza),stat=ierr) 
+  allocate(gen(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: gen" 
 
-  allocate(vart(nxyza),stat=ierr) 
+  allocate(vart(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: vart" 
-  allocate(edd(nxyza),stat=ierr) 
+  allocate(edd(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: edd" 
-  allocate(utt(nxyza),stat=ierr) 
+  allocate(utt(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: utt" 
-  allocate(vtt(nxyza),stat=ierr) 
+  allocate(vtt(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: vtt" 
-  allocate(wtt(nxyza),stat=ierr) 
+  allocate(wtt(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: wtt"
 
-  allocate(ret(nxyza),stat=ierr) 
+  allocate(ret(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ret" 
-  allocate(con(nxyza),stat=ierr) 
+  allocate(con(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: con" 
 
   ! Reynolds stresses
-  allocate(uu(nxyza),stat=ierr) 
+  allocate(uu(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: uu" 
-  allocate(uv(nxyza),stat=ierr) 
+  allocate(uv(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: uv" 
-  allocate(uw(nxyza),stat=ierr) 
+  allocate(uw(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: uw" 
-  allocate(vv(nxyza),stat=ierr) 
+  allocate(vv(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: vv" 
-  allocate(vw(nxyza),stat=ierr) 
+  allocate(vw(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: vw" 
-  allocate(ww(nxyza),stat=ierr) 
+  allocate(ww(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ww" 
 
-  allocate(yplus(nxyza),stat=ierr) 
+  allocate(yplus(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: yplus" 
-  allocate(upl(nxyza),stat=ierr) 
+  allocate(upl(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: upl" 
-  allocate(kplus(nxyza),stat=ierr) 
+  allocate(kplus(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: kplus"  
 
   if (alphamodel) then
-    allocate(alph(nxyza),stat=ierr) 
+    allocate(alph(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: alph" 
-    allocate(al_les(nxyza),stat=ierr) 
+    allocate(al_les(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: al_les" 
-    allocate(al_rans(nxyza),stat=ierr) 
+    allocate(al_rans(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: al_rans" 
-    allocate(diff(nxyza),stat=ierr) 
+    allocate(diff(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: diff" 
   endif
 
-  allocate(strain(nxyza),stat=ierr) 
+  allocate(strain(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: strain" 
-  allocate(Vorticity(nxyza),stat=ierr) 
+  allocate(Vorticity(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: Vorticity" 
 
 !     durbin time-scale limiter
   if (durbin) then
-    allocate(timelimit(nxyza),stat=ierr) 
+    allocate(timelimit(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: timelimit" 
   endif
 
 !     for menter sst, sas, earsm_wj (wallin-johansson) and earsm_m (menter implementation of wj)
   if (sst.or.sas.or.earsm_wj.or.earsm_m) then 
                     
-    allocate(domega(nxyza),stat=ierr) 
+    allocate(domega(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: domega" 
-    allocate(alphasst(nxyza),stat=ierr) 
+    allocate(alphasst(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: alphasst" 
-    allocate(bettasst(nxyza),stat=ierr) 
+    allocate(bettasst(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: bettasst" 
-    allocate(prtinv_te(nxyza),stat=ierr) 
+    allocate(prtinv_te(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: prtinv_te" 
-    allocate(prtinv_ed(nxyza),stat=ierr) 
+    allocate(prtinv_ed(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: prtinv_ed" 
 
   if (sas) then
-    allocate(qsas(nxyza),stat=ierr) 
+    allocate(qsas(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: qsas" 
-    allocate(lvk(nxyza),stat=ierr) 
+    allocate(lvk(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: lvk"
   endif
 
   if (earsm_wj.or.earsm_m) then                         
-    allocate(cmueff(nxyza),stat=ierr) 
+    allocate(cmueff(nxyz),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: cmueff" 
     allocate(bij(5,nxyza),stat=ierr) 
         if(ierr /= 0)write(*,*)"allocation error: bij"  
@@ -236,33 +236,33 @@
 
 
 !     coefficient arrays for sip solver
-  allocate(bb(nxyza),stat=ierr) 
+  allocate(bb(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: bb" 
-  allocate(bs(nxyza),stat=ierr) 
+  allocate(bs(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: bs" 
-  allocate(bw(nxyza),stat=ierr) 
+  allocate(bw(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: bw" 
-  allocate(bp(nxyza),stat=ierr) 
+  allocate(bp(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: bp" 
-  allocate(bn(nxyza),stat=ierr) 
+  allocate(bn(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: bn" 
-  allocate(be(nxyza),stat=ierr) 
+  allocate(be(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: be" 
-  allocate(bt(nxyza),stat=ierr) 
+  allocate(bt(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: bt" 
 
 !!     Coefficient arrays for PISO
-  allocate(hb(nxyza),stat=ierr) 
+  allocate(hb(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: hb" 
-  allocate(hs(nxyza),stat=ierr) 
+  allocate(hs(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: hs" 
-  allocate(hw(nxyza),stat=ierr)
+  allocate(hw(nxyz),stat=ierr)
       if(ierr /= 0)write(*,*)"allocation error: hw" 
-  allocate(hn(nxyza),stat=ierr) 
+  allocate(hn(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: hn" 
-  allocate(he(nxyza),stat=ierr) 
+  allocate(he(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: he" 
-  allocate(ht(nxyza),stat=ierr) 
+  allocate(ht(nxyz),stat=ierr) 
       if(ierr /= 0)write(*,*)"allocation error: ht" 
 
 ! Nusselt number

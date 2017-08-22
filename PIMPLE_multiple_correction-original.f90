@@ -79,7 +79,7 @@
       idns=1
       idtb=nij
 
-      do k=3,nkmm
+      do k=2,nkm
         do i=3,nimm
           do j=3,njmm
 
@@ -149,7 +149,7 @@
       idns=1                                                                            
       idtb=nij                                                                          
                                                                                         
-      do k=2,nkmm                                                                       
+      do k=2,nkm                                                                       
         do i=2,nimm                                                                       
           do j=2,njmm                                                                       
                                                                                            
@@ -169,7 +169,7 @@
       enddo                                                                             
 
 !.....Correct velocities and pressures                                                                                                                                   
-      do k=3,nkmm                                                                        
+      do k=2,nkm                                                                        
         do i=3,nimm                                                                        
           do j=3,njmm                                                                                                                            
                                                                                         
